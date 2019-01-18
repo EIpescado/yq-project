@@ -15,6 +15,7 @@
         <module>token-spring-boot-starter</module>
         <module>grabber</module>
         <module>sync-manager</module>
+        <module>parser</module>
     </modules>
 
     <properties>
@@ -29,6 +30,7 @@
         <token-starter.version>0.0.1</token-starter.version>
         <grabber.version>0.0.1</grabber.version>
         <syncmanager.version>0.0.1</syncmanager.version>
+        <parser.version>0.0.1</parser.version>
 
         <!--第三方依赖-->
         <spring-boot.version>1.5.12.RELEASE</spring-boot.version>
@@ -44,6 +46,9 @@
         <lombok.version>1.16.20</lombok.version>
         <jjwt.version>0.9.1</jjwt.version>
         <spring.version>4.3.16.RELEASE</spring.version>
+        <qrcode.version>3.3.3</qrcode.version>
+        <itextpdf.version>5.5.13</itextpdf.version>
+        <pdfbox.version>2.0.12</pdfbox.version>
     </properties>
 
     <build>
