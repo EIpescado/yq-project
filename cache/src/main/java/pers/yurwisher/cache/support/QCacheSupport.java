@@ -123,6 +123,7 @@ public class QCacheSupport {
             Class<?> customKeyGeneratorClass = qCache.customKeyGenerator();
             if(customKeyGeneratorClass != Void.class){
                 try{
+                    //todo 将此对象缓存起来
                     CustomKeyGenerator customKeyGenerator = (CustomKeyGenerator) customKeyGeneratorClass.newInstance();
                     return customKeyGenerator.generateKey();
                 }catch (Exception e){
@@ -143,6 +144,7 @@ public class QCacheSupport {
             Class<?> customHashGeneratorClass = qCache.customHashGenerator();
             if(customHashGeneratorClass != Void.class){
                 try{
+                    //todo 将此对象缓存起来
                     CustomHashGenerator customHashGenerator = (CustomHashGenerator) customHashGeneratorClass.newInstance();
                     return customHashGenerator.generateHash();
                 }catch (Exception e){
