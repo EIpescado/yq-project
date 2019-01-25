@@ -17,6 +17,7 @@
         <module>sync-manager</module>
         <module>parser</module>
         <module>cache</module>
+        <module>cache-spring-boot-starter</module>
     </modules>
 
     <properties>
@@ -33,6 +34,7 @@
         <syncmanager.version>0.0.1</syncmanager.version>
         <parser.version>0.0.1</parser.version>
         <cache.version>0.0.1</cache.version>
+        <cache-starter.version>0.0.1</cache-starter.version>
 
         <!--第三方依赖-->
         <spring-boot.version>1.5.12.RELEASE</spring-boot.version>

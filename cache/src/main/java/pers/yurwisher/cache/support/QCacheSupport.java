@@ -5,7 +5,6 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.stereotype.Component;
 import pers.yurwisher.cache.annotation.QCache;
 import pers.yurwisher.cache.exception.CacheException;
 
@@ -17,7 +16,6 @@ import java.lang.reflect.Method;
  * @description 注解支持
  * @since V1.0.0
  */
-@Component
 public class QCacheSupport {
 
     private static final Logger logger = LoggerFactory.getLogger(QCacheSupport.class);
