@@ -1,6 +1,8 @@
 package pers.yurwisher.cache.support;
 
+import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -24,6 +26,11 @@ public class QCacheAspect {
 
     @Around("@annotation(pers.yurwisher.cache.annotation.QCache)")
     public Object cacheAround(ProceedingJoinPoint pjp) throws Throwable {
-        return qCacheSupport.support(pjp);
+        return qCacheSupport.supportQCache(pjp);
+    }
+
+    @AfterReturning("@annotation(pers.yurwisher.cache.annotation.QCacheEvict)")
+    public void qCacheEvictAround(JoinPoint point) throws Throwable {
+        qCacheSupport.supportQCacheEvict(point);
     }
 }

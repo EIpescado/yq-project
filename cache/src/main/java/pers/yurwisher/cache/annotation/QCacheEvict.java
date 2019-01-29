@@ -11,15 +11,15 @@ import java.lang.annotation.Target;
 
 /**
  * @author yq
- * @date 2018/12/19 12:11
- * @description 自定义缓存注解
+ * @date 2019/01/29 16:44
+ * @description 自定义缓存清除
  * @since V1.0.0
  */
 @Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 @Documented
-public @interface QCache {
+public @interface QCacheEvict {
 
     /**
      * 缓存hash
@@ -40,7 +40,6 @@ public @interface QCache {
      */
     String expression() default "";
 
-
     /**
      * redis数据类型
      * @return RedisType
@@ -58,5 +57,4 @@ public @interface QCache {
      * @return key生成器
      */
     Class<?> customHashGenerator() default Void.class;
-
 }
