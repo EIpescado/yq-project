@@ -127,10 +127,7 @@ public class QCacheSupport {
             String expression = qCache.expression();
             if (!isEmpty(expression)) {
                 //解析表达式
-                Object dynamicValue = CustomSpringExpressionLanguageParser.getDynamicValue(signature.getParameterNames(), pjp.getArgs(),expression);
-                if(dynamicValue != null){
-                    return dynamicValue.toString();
-                }
+                key = CustomSpringExpressionLanguageParser.parseKey(signature.getMethod(), pjp.getArgs(),expression);
             }
         }else {
             return key;
@@ -224,10 +221,7 @@ public class QCacheSupport {
             String expression = qCache.expression();
             if (!isEmpty(expression)) {
                 //解析表达式
-                Object dynamicValue = CustomSpringExpressionLanguageParser.getDynamicValue(signature.getParameterNames(), point.getArgs(),expression);
-                if(dynamicValue != null){
-                    return dynamicValue.toString();
-                }
+                key = CustomSpringExpressionLanguageParser.parseKey(signature.getMethod(), point.getArgs(),expression);
             }
         }else {
             return key;
