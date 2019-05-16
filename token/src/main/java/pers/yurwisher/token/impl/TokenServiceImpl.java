@@ -94,4 +94,9 @@ public class TokenServiceImpl implements ITokenService {
         }
         return builder.compact();
     }
+
+    @Override
+    public String generateToken(String subject, Token token, Long expireTime) {
+        return generateToken(subject,token.toJSON(),expireTime);
+    }
 }

@@ -23,4 +23,14 @@ public interface ITokenService {
      * @param jwsToken token
      */
     Token parseToken(String jwsToken) throws TokenException;
+
+
+    /**
+     * 生成token
+     * @param subject
+     * @param token
+     * @param expireTime 过期时间
+     * @return
+     */
+    String generateToken(String subject, Token token,Long expireTime);
 }
