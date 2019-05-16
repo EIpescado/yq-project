@@ -64,4 +64,8 @@ public class Utils {
     public static String null2EmptyWithTrimNew(String x){
         return isNotEmpty(x) ? x : "";
     }
+
+    public static String null2EmptyWithTrimNew(Object x){
+        return x != null && isNotEmpty(x.toString()) ? x.toString() : "";
+    }
 }

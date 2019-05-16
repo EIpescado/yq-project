@@ -3,6 +3,7 @@ package pers.yurwisher.grabber;
 import pers.yurwisher.grabber.customs.CustomsGrabber;
 import pers.yurwisher.grabber.exchangerate.ExchangeRateGrabber;
 import pers.yurwisher.grabber.express.Kuaidi100Grabber;
+import pers.yurwisher.grabber.singlewindow.SingleWindowGrabber;
 
 /**
  * @author yq
@@ -17,11 +18,14 @@ public class Grabbers {
     private static CustomsGrabber customsGrabber;
     private static ExchangeRateGrabber exchangeRateGrabber;
     private static Kuaidi100Grabber kuaidi100Grabber;
+    private static SingleWindowGrabber singleWindowGrabber;
 
     static {
         customsGrabber = new CustomsGrabber();
         exchangeRateGrabber = new ExchangeRateGrabber(JDomHelper.getDefaultInstance());
-        kuaidi100Grabber = new Kuaidi100Grabber(new HttpClientHelper());
+        HttpClientHelper httpClientHelper = new HttpClientHelper();
+        kuaidi100Grabber = new Kuaidi100Grabber(httpClientHelper);
+        singleWindowGrabber = new SingleWindowGrabber(httpClientHelper);
     }
 
     public static CustomsGrabber getCustomsGrabber() {
@@ -36,4 +40,7 @@ public class Grabbers {
         return kuaidi100Grabber;
     }
 
+    public static SingleWindowGrabber getSingleWindowGrabber() {
+        return singleWindowGrabber;
+    }
 }

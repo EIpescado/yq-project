@@ -71,7 +71,7 @@ public class HttpClientHelper {
     /**
      * 不需要导入证书，SSL信任所有证书，使用该方法
      */
-    private CloseableHttpClient getDefaultClient() {
+    public CloseableHttpClient getDefaultClient() {
         if(httpClient == null){
             try {
                 SSLContext sslContext = new SSLContextBuilder().loadTrustMaterial(null, (chain, authType) -> true).build();
