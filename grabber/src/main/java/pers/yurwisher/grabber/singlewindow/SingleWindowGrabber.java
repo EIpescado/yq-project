@@ -30,7 +30,7 @@ public class SingleWindowGrabber {
     private static final Logger logger = LoggerFactory.getLogger(SingleWindowGrabber.class);
 
     /**
-     * 文件地址
+     * 报关单文件地址
      */
     private static final String PDF_URL = "http://sz.singlewindow.cn/dyck/swProxy/decserver/entries/ftl/1/0/0/%1$s.pdf";
     private static final String PDF_ACCEPT = "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8";
@@ -38,7 +38,9 @@ public class SingleWindowGrabber {
     private static final String PDF_HOST = "sz.singlewindow.cn";
     private static final String PDF_UPGRADE_INSECURE_REQUESTS = "1";
     private static final String PDF_REFERER = "http://sz.singlewindow.cn/dyck/swProxy/decserver/sw/dec/cusQueryZh?ngBasePath=http%3A%2F%2Fsz.singlewindow.cn%3A80%2Fdyck%2FswProxy%2Fdecserver%2F";
-
+    /**
+     * 报关单查询地址
+     */
     private static final String QUERY_PATH = "http://sz.singlewindow.cn/dyck/swProxy/decserver/sw/dec/merge/cusQuery?";
 
     private static final String QUERY_ACCEPT = "application/json, text/javascript, */*; q=0.01";
