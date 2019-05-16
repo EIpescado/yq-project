@@ -59,4 +59,10 @@ public @interface QCache {
      */
     Class<?> customHashGenerator() default Void.class;
 
+    /**
+     * key 过期时间,默认 -1L 永不过期
+     * @return 过期时间
+     */
+    long keyExpiresTime() default -1L;
+
 }

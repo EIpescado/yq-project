@@ -80,7 +80,7 @@ public class QCacheSupport {
             throw new CacheException("key value is empty");
         }
         IRedisService redisService =  getRedisService(pjp);
-        return redisService.getValue(hash,key);
+        return redisService.getValue(hash,key,qCache.keyExpiresTime());
     }
 
     /**
@@ -92,7 +92,7 @@ public class QCacheSupport {
             throw new CacheException("key value is empty");
         }
         IRedisService redisService =  getRedisService(pjp);
-        return redisService.getValue(key);
+        return redisService.getValue(key,qCache.keyExpiresTime());
     }
 
     /**
@@ -113,28 +113,33 @@ public class QCacheSupport {
     }
 
     private boolean isEmpty(String x){
-        return x == null || x.isEmpty();
+        return x == null || x.trim().isEmpty();
     }
 
     /**
      * 得到key值
      */
     private String calculateKey(QCache qCache,ProceedingJoinPoint pjp,MethodSignature signature){
+        return calculateKey(qCache.key(),qCache.expression(),qCache.customKeyGenerator(),signature,pjp.getArgs());
+    }
+
+    private String calculateKey(QCacheEvict qCache,JoinPoint point,MethodSignature signature){
+        return calculateKey(qCache.key(),qCache.expression(),qCache.customKeyGenerator(),signature,point.getArgs());
+    }
+
+    private String calculateKey(String key,String expression,Class<?> customKeyGeneratorClass,MethodSignature signature,Object[] args){
         //key ,最高优先级
-        String key = qCache.key() ;
         if(isEmpty(key)){
             //表达式 其次
-            String expression = qCache.expression();
             if (!isEmpty(expression)) {
                 //解析表达式
-                key = CustomSpringExpressionLanguageParser.parseKey(signature.getMethod(), pjp.getArgs(),expression);
+                key = CustomSpringExpressionLanguageParser.parseKey(signature.getMethod(),args,expression);
             }
         }else {
             return key;
         }
         if(isEmpty(key)){
             //自定义key生成器 最低
-            Class<?> customKeyGeneratorClass = qCache.customKeyGenerator();
             if(customKeyGeneratorClass != Void.class){
                 try{
                     //todo 将此对象缓存起来
@@ -152,13 +157,23 @@ public class QCacheSupport {
      * 得到HASH
      */
     private String calculateHash(QCache qCache){
-        String hash = qCache.hash();
+        return calculateHash(qCache.hash(),qCache.customHashGenerator());
+    }
+
+    private String calculateHash(QCacheEvict qCacheEvict){
+        return calculateHash(qCacheEvict.hash(),qCacheEvict.customHashGenerator());
+    }
+
+    /**
+     * 计算出Hash
+     * @param hash hash
+     * @param customHashGeneratorClass 自定义hash生成类
+     * @return hash
+     */
+    private String  calculateHash( String hash, Class<?> customHashGeneratorClass){
         if(isEmpty(hash)){
-            //自定义hash生成器
-            Class<?> customHashGeneratorClass = qCache.customHashGenerator();
             if(customHashGeneratorClass != Void.class){
                 try{
-                    //todo 将此对象缓存起来
                     CustomHashGenerator customHashGenerator = (CustomHashGenerator) customHashGeneratorClass.newInstance();
                     return customHashGenerator.generateHash();
                 }catch (Exception e){
@@ -195,50 +210,4 @@ public class QCacheSupport {
         redisTemplate.delete(key);
     }
 
-    private String calculateHash(QCacheEvict qCache){
-        String hash = qCache.hash();
-        if(isEmpty(hash)){
-            //自定义hash生成器
-            Class<?> customHashGeneratorClass = qCache.customHashGenerator();
-            if(customHashGeneratorClass != Void.class){
-                try{
-                    //todo 将此对象缓存起来
-                    CustomHashGenerator customHashGenerator = (CustomHashGenerator) customHashGeneratorClass.newInstance();
-                    return customHashGenerator.generateHash();
-                }catch (Exception e){
-                    throw new CacheException("create customHashGenerator error", e);
-                }
-            }
-        }
-        return hash;
-    }
-
-    private String calculateKey(QCacheEvict qCache,JoinPoint point,MethodSignature signature){
-        //key ,最高优先级
-        String key = qCache.key() ;
-        if(isEmpty(key)){
-            //表达式 其次
-            String expression = qCache.expression();
-            if (!isEmpty(expression)) {
-                //解析表达式
-                key = CustomSpringExpressionLanguageParser.parseKey(signature.getMethod(), point.getArgs(),expression);
-            }
-        }else {
-            return key;
-        }
-        if(isEmpty(key)){
-            //自定义key生成器 最低
-            Class<?> customKeyGeneratorClass = qCache.customKeyGenerator();
-            if(customKeyGeneratorClass != Void.class){
-                try{
-                    //todo 将此对象缓存起来
-                    CustomKeyGenerator customKeyGenerator = (CustomKeyGenerator) customKeyGeneratorClass.newInstance();
-                    return customKeyGenerator.generateKey();
-                }catch (Exception e){
-                    throw new CacheException("create customKeyGenerator error", e);
-                }
-            }
-        }
-        return key;
-    }
 }

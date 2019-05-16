@@ -16,34 +16,74 @@ public interface IRedisService<T> {
      * @param hash hash
      * @param key key
      * @param value 值
+     * @param expireTime 过期时间
+     */
+    default void putValue(String hash, String key, T value,long expireTime){
+        if(expireTime <= -1L){
+            putValue(hash,key,value);
+        }else {
+            redisTemplate().opsForHash().put(hash,key,new CacheObject<>(value,System.currentTimeMillis() + expireTime));
+        }
+    }
+
+    /**
+     * 存值,永不过期
+     * @param hash hash
+     * @param key key
+     * @param value 值
      */
     default void putValue(String hash, String key, T value){
-        redisTemplate().opsForHash().put(hash,key,value);
+        redisTemplate().opsForHash().put(hash,key,new CacheObject<>(value));
     }
 
     /**
      * 取值,若取不到则从数据持有方获取并存入redis
      * @param hash hash
      * @param key key
+     * @param expireTime 过期时间
      * @return val
      */
     @SuppressWarnings("unchecked")
-    default T getValue(String hash, String key){
+    default T getValue(String hash, String key,long expireTime){
         Object val = redisTemplate().opsForHash().get(hash,key);
         if(val != null){
-            return (T) val;
-        }else {
-            T t ;
-            try {
-                t = originalData();
-                if (t != null){
+            CacheObject<T> cacheObject = (CacheObject<T>) val;
+            //尚未过期
+            if(cacheObject.getExpiresTime() == -1L || cacheObject.getExpiresTime() > System.currentTimeMillis()){
+                return cacheObject.getValue();
+            }else {
+                //已过期重新获取值 并存入redis
+                T t = getValue();
+                if(t != null){
                     //存入redis
-                    putValue(hash,key,t);
-                    return t;
+                    putValue(hash,key,t,expireTime);
                 }
-            } catch (Throwable throwable) {
-                throw new CacheException("get originalData error",throwable);
+                return t;
             }
+        }else {
+            //缓存中没有重新获取 并存入redis
+            T t = getValue();
+            if(t != null){
+                //存入redis
+                putValue(hash,key,t,expireTime);
+            }
+            return t;
+        }
+    }
+
+    /**
+     * 调用接口获取数据
+     * @return t
+     */
+    default T getValue(){
+        T t ;
+        try {
+            t = originalData();
+            if (t != null){
+                return t;
+            }
+        } catch (Throwable throwable) {
+            throw new CacheException("get originalData error",throwable);
         }
         return null;
     }
@@ -54,7 +94,21 @@ public interface IRedisService<T> {
      * @param value 值
      */
     default void putValue(String key, T value){
-        redisTemplate().opsForValue().set(key,value);
+        redisTemplate().opsForValue().set(key,new CacheObject<>(value));
+    }
+
+    /**
+     * 存值
+     * @param key key
+     * @param value 值
+     * @param expireTime 过期时间
+     */
+    default void putValue(String key, T value,long expireTime){
+        if(expireTime <= -1L){
+            putValue(key,value);
+        }else {
+            redisTemplate().opsForValue().set(key,new CacheObject<>(value,expireTime + System.currentTimeMillis()));
+        }
     }
 
     /**
@@ -63,24 +117,31 @@ public interface IRedisService<T> {
      * @return val
      */
     @SuppressWarnings("unchecked")
-    default T getValue(String key){
+    default T getValue(String key,long expireTime){
         Object val = redisTemplate().opsForValue().get(key);
         if(val != null){
-            return (T) val;
-        }else {
-            T t ;
-            try {
-                t = originalData();
-                if (t != null){
+            CacheObject<T> cacheObject = (CacheObject<T>) val;
+            //尚未过期
+            if(cacheObject.getExpiresTime() == -1L || cacheObject.getExpiresTime() > System.currentTimeMillis()){
+                return cacheObject.getValue();
+            }else {
+                //已过期重新获取值 并存入redis
+                T t = getValue();
+                if(t != null){
                     //存入redis
-                    putValue(key,t);
-                    return t;
+                    putValue(key,t,expireTime);
                 }
-            } catch (Throwable throwable) {
-                throw new CacheException("get originalData error",throwable);
+                return t;
             }
+        }else {
+            //缓存中没有重新获取 并存入redis
+            T t = getValue();
+            if(t != null){
+                //存入redis
+                putValue(key,t,expireTime);
+            }
+            return t;
         }
-        return null;
     }
 
 
