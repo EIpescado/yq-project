@@ -9,15 +9,16 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>juggernaut</artifactId>
-    <version>${juggernaut.version}</version>
-    <description>主宰:异步执行</description>
+    <artifactId>wisp</artifactId>
+    <version>${wisp.version}</version>
+    <description>小精灵:通用工具类</description>
 
     <dependencies>
+        <!--加密解密工具 -->
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>${slf4j.version}</version>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>${codec.version}</version>
         </dependency>
     </dependencies>
 </project>

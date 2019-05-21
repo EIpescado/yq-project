@@ -19,6 +19,7 @@
         <module>cache</module>
         <module>cache-spring-boot-starter</module>
         <module>juggernaut</module>
+        <module>wisp</module>
     </modules>
 
     <properties>
@@ -37,6 +38,7 @@
         <cache.version>0.0.1</cache.version>
         <cache-starter.version>0.0.1</cache-starter.version>
         <juggernaut.version>0.0.1</juggernaut.version>
+        <wisp.version>0.0.1</wisp.version>
 
         <!--第三方依赖-->
         <spring-boot.version>1.5.12.RELEASE</spring-boot.version>
@@ -57,6 +59,7 @@
         <pdfbox.version>2.0.12</pdfbox.version>
         <spring.data.redis.version>1.8.11.RELEASE</spring.data.redis.version>
         <aspectj.version>1.8.13</aspectj.version>
+        <codec.version>1.11</codec.version>
     </properties>
 
     <build>
