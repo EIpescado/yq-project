@@ -10,30 +10,30 @@ import java.util.regex.Pattern;
 public class StringUtils {
 
     /**匹配所有特殊字符的正则表达式*/
-    public static final String SPECIAL_CHARACTER_REGEX = "[`~!@#$%^&*()\\-+=|{}':;',\\[\\].<>/?~！@#￥%……&*（）—_+|{}【】‘；：”“’。，、\"？\\s]";
+    private static final String SPECIAL_CHARACTER_REGEX = "[`~!@#$%^&*()\\-+=|{}':;',\\[\\].<>/?~！@#￥%……&*（）—_+|{}【】‘；：”“’。，、\"？\\s]";
 
-    public static final Pattern SPECIAL_CHARACTER_PATTERN = Pattern.compile(SPECIAL_CHARACTER_REGEX) ;
+    private static final Pattern SPECIAL_CHARACTER_PATTERN = Pattern.compile(SPECIAL_CHARACTER_REGEX) ;
 
     /**中文正则*/
-    public static final String CHINESE_REGEX = "[\u4e00-\u9fa5]" ;
+    private static final String CHINESE_REGEX = "[\u4e00-\u9fa5]" ;
 
-    public static final Pattern CHINESE_REGEX_PATTERN = Pattern.compile(CHINESE_REGEX) ;
+    private static final Pattern CHINESE_REGEX_PATTERN = Pattern.compile(CHINESE_REGEX) ;
 
     /**数字正则*/
-    public static final String NUMBER_REGEX = ".*\\d+.*" ;
+    private static final String NUMBER_REGEX = ".*\\d+.*" ;
 
-    public static final Pattern NUMBER_REGEX_PATTERN = Pattern.compile(NUMBER_REGEX) ;
+    private static final Pattern NUMBER_REGEX_PATTERN = Pattern.compile(NUMBER_REGEX) ;
 
     /**匹配括号中间内容*/
     private static final Pattern BRACKET_CONTENT_PATTERN = Pattern.compile("(?<=\\()(.+?)(?=\\))");
 
-    public static final char UNDERLINE = '_';
+    private static final char UNDERLINE = '_';
 
 
     /**纯数字正则*/
-    public static final String PURE_NUMBER_REGEX = "[0-9]*" ;
+    private static final String PURE_NUMBER_REGEX = "[0-9]*" ;
 
-    public static final Pattern PURE_NUMBER_REGEX_PATTERN = Pattern.compile(PURE_NUMBER_REGEX) ;
+    private static final Pattern PURE_NUMBER_REGEX_PATTERN = Pattern.compile(PURE_NUMBER_REGEX) ;
 
     private StringUtils() {
     }
@@ -87,10 +87,21 @@ public class StringUtils {
     }
 
     /**
+     * 字符串是否为空
+     */
+    public static  boolean isEmpty(CharSequence foo) {
+        return foo == null || foo.length() == 0;
+    }
+
+    /**
      * 字符串是否不为空
      */
     public static  boolean isNotEmpty(String foo) {
         return (null != foo && foo.trim().length() > 0);
+    }
+
+    public static boolean isNotEmpty(CharSequence cs){
+        return cs == null || cs.length() == 0;
     }
 
     /**
@@ -349,5 +360,24 @@ public class StringUtils {
         }else{
             return false;
         }
+    }
+
+    public static boolean isBlank(CharSequence cs) {
+        int strLen;
+        if (cs != null && (strLen = cs.length()) != 0) {
+            for(int i = 0; i < strLen; ++i) {
+                if (!Character.isWhitespace(cs.charAt(i))) {
+                    return false;
+                }
+            }
+
+            return true;
+        } else {
+            return true;
+        }
+    }
+
+    public static boolean isNotBlank(CharSequence cs) {
+        return !isBlank(cs);
     }
 }

@@ -12,21 +12,25 @@ import pers.yurwisher.parser.qrcode.QrCodeParser;
  */
 public class Parsers {
 
+    private Parsers(){
+
+    }
+
     private static QrCodeParser qrCodeParser = new QrCodeParser();
 
     private static PdfParser pdfParser = new PdfParser();
 
     private static HSBCParser hsbcParser = new HSBCParser();
 
-    public static QrCodeParser getQrCodeParser() {
+    public static QrCodeParser qrCodeParser() {
         return qrCodeParser;
     }
 
-    public static PdfParser getPdfParser() {
+    public static PdfParser pdfParser() {
         return pdfParser;
     }
 
-    public static HSBCParser getHsbcParser() {
+    public static HSBCParser hsbcParser() {
         return hsbcParser;
     }
 }
