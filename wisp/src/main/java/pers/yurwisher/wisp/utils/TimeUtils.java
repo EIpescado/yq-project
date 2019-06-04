@@ -45,7 +45,7 @@ public class TimeUtils {
     }
 
     public static LocalDateTime format(String s){
-       return LocalDateTime.parse(s,YYYY_MM_DD_FORMATTER);
+       return LocalDate.parse(s,YYYY_MM_DD_FORMATTER).atStartOfDay();
     }
 
     public static long getTimeMillis(LocalDateTime dateTime){
