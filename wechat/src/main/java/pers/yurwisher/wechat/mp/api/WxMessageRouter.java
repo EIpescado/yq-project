@@ -111,27 +111,24 @@ public class WxMessageRouter {
                     )
                 );
             }else {
-                return rule.service(xmlMessage);
+                res = rule.service(xmlMessage);
             }
         }
         if (futures.size() > 0) {
             logger.info("消息:{},异步执行的操作:{}" ,xmlMessage.getMsgId(),futures.size());
-            List<WxMessage> messageList = new ArrayList<>(futures.size());
             this.executorService.submit(()->{
                 for (Future<WxMessage> future : futures) {
                     //超时时间获取
                     try {
                         //执行 4秒超时
-                        messageList.add(future.get(4, TimeUnit.SECONDS));
+                        future.get(4, TimeUnit.SECONDS);
                     } catch (InterruptedException |ExecutionException | TimeoutException e) {
                         logger.error("Error happened when wait task finish", e);
                     }
                 }
             });
-            //异步返回第一个执行结果
-            return messageList.get(0);
         }
-        return null;
+        return res;
     }
 
     /**
