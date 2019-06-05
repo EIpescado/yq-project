@@ -12,7 +12,11 @@ public class StringUtils {
     /**匹配所有特殊字符的正则表达式*/
     private static final String SPECIAL_CHARACTER_REGEX = "[`~!@#$%^&*()\\-+=|{}':;',\\[\\].<>/?~！@#￥%……&*（）—_+|{}【】‘；：”“’。，、\"？\\s]";
 
+    private static final String SPECIAL_CHARACTER_REGEX_2 = "[`~!@#$%^&*()\\-+=|{}':;',\\[\\]<>/?~！@#￥%……&*（）—_+|{}【】‘；：”“’。，、\"？\\s]";
+
     private static final Pattern SPECIAL_CHARACTER_PATTERN = Pattern.compile(SPECIAL_CHARACTER_REGEX) ;
+
+    private static final Pattern SPECIAL_CHARACTER_PATTERN_2 = Pattern.compile(SPECIAL_CHARACTER_REGEX_2) ;
 
     /**中文正则*/
     private static final String CHINESE_REGEX = "[\u4e00-\u9fa5]" ;
@@ -148,6 +152,15 @@ public class StringUtils {
         Matcher m = SPECIAL_CHARACTER_PATTERN.matcher(str);
         return m.replaceAll("").trim();
     }
+
+    /**
+     * 去除字符串所有特殊字符,除开小数点
+     */
+    public static String removeSpecialChar(String str) {
+        Matcher m = SPECIAL_CHARACTER_PATTERN_2.matcher(str);
+        return m.replaceAll("").trim();
+    }
+
 
     /**
      * 判断str是否在strArr中

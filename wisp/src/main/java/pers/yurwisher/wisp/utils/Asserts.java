@@ -4,6 +4,7 @@ import pers.yurwisher.wisp.enums.CustomTipEnum;
 import pers.yurwisher.wisp.exception.CustomException;
 import pers.yurwisher.wisp.wrapper.CustomTip;
 
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Map;
 
@@ -373,4 +374,47 @@ public class Asserts {
         return new CustomTip(errorEnum.getCode(),x);
     }
 
+    /**
+     * 大于0
+     * @param bigDecimal 数字
+     * @param message 消息
+     */
+    public static void greaterThenZero(BigDecimal bigDecimal,String message) {
+        if (bigDecimal != null && !NumberUtils.greaterThenZero(bigDecimal)) {
+            throw new CustomException(generateError(CustomTipEnum.MUST_GREATER_THEN_0,message));
+        }
+    }
+
+    /**
+     * 大于等于0
+     * @param bigDecimal 数字
+     * @param message 消息
+     */
+    public static void greaterThenOrEqualsZero(BigDecimal bigDecimal,String message) {
+        if (bigDecimal != null && !NumberUtils.greaterOrEqualZero(bigDecimal)) {
+            throw new CustomException(generateError(CustomTipEnum.MUST_GREATER_OR_EQUALS_0,message));
+        }
+    }
+
+    /**
+     * 小于等于0
+     * @param bigDecimal 数字
+     * @param message 消息
+     */
+    public static void lessOrEqualZero(BigDecimal bigDecimal,String message) {
+        if (bigDecimal != null && !NumberUtils.lessOrEqualZero(bigDecimal)) {
+            throw new CustomException(generateError(CustomTipEnum.MUST_LESS_OR_EQUALS_0,message));
+        }
+    }
+
+    /**
+     * 小于0
+     * @param bigDecimal 数字
+     * @param message 消息
+     */
+    public static void lessThenZero(BigDecimal bigDecimal,String message) {
+        if (bigDecimal != null && !NumberUtils.lessThenZero(bigDecimal)) {
+            throw new CustomException(generateError(CustomTipEnum.MUST_LESS_THEN_0,message));
+        }
+    }
 }
