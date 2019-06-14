@@ -12,7 +12,7 @@ public class PojoGenerateConfigBuilder {
     private String soSuperClass;
     private String toSuperClass;
     private String packageName;
-    private boolean useLombok;
+    private Boolean useLombok;
     private GenerateConfig generateConfig;
 
     public PojoGenerateConfigBuilder setVo(Boolean vo) {
@@ -70,7 +70,7 @@ public class PojoGenerateConfigBuilder {
         return this;
     }
 
-    public PojoGenerateConfigBuilder setUseLombok(boolean useLombok) {
+    public PojoGenerateConfigBuilder setUseLombok(Boolean useLombok) {
         this.useLombok = useLombok;
         return this;
     }

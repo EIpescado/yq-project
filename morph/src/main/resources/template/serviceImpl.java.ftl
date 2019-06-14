@@ -1,6 +1,9 @@
-package ${servicePackageName};
+package ${serviceImplPackageName};
 
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ${entityClass};
+import ${mapperPackageName}.${entityName}Mapper;
 import ${superServiceClass};
 <#if foClass??>
 import ${foClass};
@@ -26,20 +29,29 @@ import ${toClass};
  * @description ${description}
  * @since V1.0.0
  */
-public interface ${serviceName} extends ${superServiceName}<${entityName}> {
+@Service
+public class ${serviceName} extends ${baseImplServiceName}<${entityName}Mapper,${entityName}> implements ${superServiceName}{
     <#if foClass??>
     /**
      * 新增
      * @param fo 参数
      */
-    void create(${entityName}Fo fo);
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void create(${entityName}Fo fo){
+
+    }
 
     /**
      * 更新
      * @param id 主键
      * @param fo 参数
      */
-    void update(${idType} id,${entityName}Fo fo);
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void update(${idType} id,${entityName}Fo fo){
+
+    }
     </#if>
     <#if qoClass??&&toClass??>
     /**
@@ -47,14 +59,20 @@ public interface ${serviceName} extends ${superServiceName}<${entityName}> {
      * @param qo 查询参数
      * @return 分页对象
      */
-    PageR<${entityName}To> list(${entityName}Qo qo);
+    @Override
+    public PageR<${entityName}To> list(${entityName}Qo qo){
+        return null;
+    }
     </#if>
     <#if soClass??>
     /**
     * 下拉列表
     * @return 集合
     */
-    List<${entityName}So> select();
+    @Override
+    public List<${entityName}So> select(){
+        return null;
+    }
     </#if>
     <#if voClass??>
     /**
@@ -62,11 +80,18 @@ public interface ${serviceName} extends ${superServiceName}<${entityName}> {
     * @param id 主键
     * @return ${entityName}Vo
     */
-    ${entityName}Vo get(${idType} id);
+    @Override
+    public ${entityName}Vo get(${idType} id){
+        return null;
+    }
     </#if>
      /**
      * 删除
      * @param id 主键
      */
-    void delete(${idType} id);
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void delete(${idType} id){
+
+    }
 }

@@ -1,5 +1,6 @@
 package pers.yurwisher.morph.support;
 
+import pers.yurwisher.morph.bean.ServiceImplInfo;
 import pers.yurwisher.morph.bean.ServiceInfo;
 import pers.yurwisher.morph.common.Constant;
 import pers.yurwisher.morph.config.ServiceGenerateConfig;
@@ -23,6 +24,15 @@ public class ServiceGenerator implements Generator{
         String fileName = info.getServiceName() + Constant.DOT_JAVA;
         //生成文件
         generate(info,outPutFolderPath,fileName,"/template/service.java.ftl");
+
+        //生成impl
+        ServiceImplInfo implInfo =  generateImplInfo(info);
+        //文件输出路径
+        outPutFolderPath = generateOutPutFolderPath(config.getGenerateConfig().getBaseOutPutPath(),implInfo.getServiceImplPackageName());
+        //文件名称
+        fileName = implInfo.getServiceName() + Constant.DOT_JAVA;
+        //生成文件
+        generate(implInfo,outPutFolderPath,fileName,"/template/serviceImpl.java.ftl");
     }
 
     private ServiceInfo generateInfo(ServiceGenerateConfig config) {
@@ -44,6 +54,33 @@ public class ServiceGenerator implements Generator{
         info.setQoClass(config.getQoClass());
         info.setSoClass(config.getSoClass());
         info.setToClass(config.getToClass());
+        return info;
+    }
+
+    private ServiceImplInfo generateImplInfo(ServiceInfo serviceInfo){
+        ServiceImplInfo info = new ServiceImplInfo();
+        info.setIdType(serviceInfo.getIdType());
+        info.setAuthor(serviceInfo.getAuthor());
+        //描述
+        info.setDescription(serviceInfo.getDescription() + "serviceImpl");
+        info.setDate(new Date());
+        info.setEntityClass(serviceInfo.getEntityClass());
+        info.setEntityName(serviceInfo.getEntityName());
+
+        info.setServiceName(generateClassName(serviceInfo.getEntityName(),"ServiceImpl",true));
+        info.setSuperServiceClass(serviceInfo.getServicePackageName() + Constant.DOT + serviceInfo.getServiceName());
+        info.setSuperServiceName(serviceInfo.getServiceName());
+        //包名
+        info.setServiceImplPackageName(serviceInfo.getServicePackageName() + Constant.DOT + "impl");
+        //父实现类
+        info.setBaseImplServiceName(serviceInfo.getSuperServiceName() + "Impl");
+        //mapper
+        info.setMapperPackageName(serviceInfo.getServicePackageName().substring(0,serviceInfo.getServicePackageName().lastIndexOf(Constant.DOT) + 1) + "mapper");
+        info.setVoClass(serviceInfo.getVoClass());
+        info.setFoClass(serviceInfo.getFoClass());
+        info.setQoClass(serviceInfo.getQoClass());
+        info.setSoClass(serviceInfo.getSoClass());
+        info.setToClass(serviceInfo.getToClass());
         return info;
     }
 

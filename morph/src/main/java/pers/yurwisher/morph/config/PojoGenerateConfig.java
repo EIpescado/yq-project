@@ -48,7 +48,7 @@ public class PojoGenerateConfig{
 
     private GenerateConfig generateConfig;
 
-    public PojoGenerateConfig(GenerateConfig generateConfig,Boolean vo, Boolean qo, Boolean fo, Boolean so, Boolean to, String voSuperClass, String qoSuperClass, String foSuperClass, String soSuperClass, String toSuperClass, String packageName, boolean useLombok) {
+    public PojoGenerateConfig(GenerateConfig generateConfig,Boolean vo, Boolean qo, Boolean fo, Boolean so, Boolean to, String voSuperClass, String qoSuperClass, String foSuperClass, String soSuperClass, String toSuperClass, String packageName, Boolean useLombok) {
         this.vo = vo == null ? true : vo;
         this.qo = qo == null ? true : qo;
         this.fo = fo == null ? true : fo;
@@ -60,7 +60,7 @@ public class PojoGenerateConfig{
         this.soSuperClass = soSuperClass;
         this.toSuperClass = toSuperClass;
         this.packageName = packageName;
-        this.useLombok = useLombok;
+        this.useLombok = useLombok == null ? true : useLombok;
         this.generateConfig = generateConfig;
     }
 
