@@ -1,54 +1,30 @@
-package pers.yurwisher.morph.config;
+package pers.yurwisher.morph.model;
 
 /**
  * @author yq
- * @date 2019/06/12 11:25
+ * @date 2019/06/17 14:02
  * @description
  * @since V1.0.0
  */
-public class PojoGenerateConfig{
-    /**
-     * 视图对象
-     */
-    private Boolean vo;
-    /**
-     * 查询对象
-     */
-    private Boolean qo;
-    /**
-     * 表单对象
-     */
-    private Boolean fo;
-    /**
-     * 下拉框对象
-     */
-    private Boolean so;
-    /**
-     * 列表对象
-     */
-    private Boolean to;
+public class CoreConfig {
 
-    /**
-     * 对应的所有父类
-     */
+    private Boolean vo;
+    private Boolean qo;
+    private Boolean fo;
+    private Boolean so;
+    private Boolean to;
     private String voSuperClass;
     private String qoSuperClass;
     private String foSuperClass;
     private String soSuperClass;
     private String toSuperClass;
 
-    /**
-     * 包名
-     */
-    private String packageName;
-    /**
-     * 是否使用Lombok
-     */
-    private boolean useLombok;
+    private String serviceSuperClass;
+    private String controllerSuperClass;
 
-    private GenerateConfig generateConfig;
+    private Boolean useLombok;
 
-    public PojoGenerateConfig(GenerateConfig generateConfig,Boolean vo, Boolean qo, Boolean fo, Boolean so, Boolean to, String voSuperClass, String qoSuperClass, String foSuperClass, String soSuperClass, String toSuperClass, String packageName, Boolean useLombok) {
+    public CoreConfig(Boolean vo, Boolean qo, Boolean fo, Boolean so, Boolean to, String voSuperClass, String qoSuperClass, String foSuperClass, String soSuperClass, String toSuperClass, String serviceSuperClass, String controllerSuperClass, Boolean useLombok) {
         this.vo = vo == null ? true : vo;
         this.qo = qo == null ? true : qo;
         this.fo = fo == null ? true : fo;
@@ -59,9 +35,9 @@ public class PojoGenerateConfig{
         this.foSuperClass = foSuperClass;
         this.soSuperClass = soSuperClass;
         this.toSuperClass = toSuperClass;
-        this.packageName = packageName;
-        this.useLombok = useLombok == null ? true : useLombok;
-        this.generateConfig = generateConfig;
+        this.serviceSuperClass = serviceSuperClass;
+        this.controllerSuperClass = controllerSuperClass;
+        this.useLombok = useLombok;
     }
 
     public Boolean getVo() {
@@ -144,27 +120,27 @@ public class PojoGenerateConfig{
         this.toSuperClass = toSuperClass;
     }
 
-    public String getPackageName() {
-        return packageName;
+    public String getServiceSuperClass() {
+        return serviceSuperClass;
     }
 
-    public void setPackageName(String packageName) {
-        this.packageName = packageName;
+    public void setServiceSuperClass(String serviceSuperClass) {
+        this.serviceSuperClass = serviceSuperClass;
     }
 
-    public boolean isUseLombok() {
+    public String getControllerSuperClass() {
+        return controllerSuperClass;
+    }
+
+    public void setControllerSuperClass(String controllerSuperClass) {
+        this.controllerSuperClass = controllerSuperClass;
+    }
+
+    public Boolean getUseLombok() {
         return useLombok;
     }
 
-    public void setUseLombok(boolean useLombok) {
+    public void setUseLombok(Boolean useLombok) {
         this.useLombok = useLombok;
-    }
-
-    public GenerateConfig getGenerateConfig() {
-        return generateConfig;
-    }
-
-    public void setGenerateConfig(GenerateConfig generateConfig) {
-        this.generateConfig = generateConfig;
     }
 }

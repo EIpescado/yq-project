@@ -2,7 +2,7 @@ package pers.yurwisher.morph.support;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import pers.yurwisher.morph.bean.FieldInfo;
+import pers.yurwisher.morph.model.FieldInfo;
 import pers.yurwisher.morph.common.Constant;
 import pers.yurwisher.morph.common.MorphException;
 import pers.yurwisher.morph.common.Utils;

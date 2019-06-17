@@ -1,72 +1,61 @@
-package ${servicePackageName};
+package ${coreModel.basePackage}.service;
 
-import ${entityClass};
+import ${coreModel.entityClass};
 import ${superServiceClass};
-<#if foClass??>
-import ${foClass};
-</#if>
-<#if voClass??>
-import ${voClass};
-</#if>
-<#if qoClass??>
-import ${qoClass};
+import ${coreModel.basePackage}.pojo.fo.${coreModel.entityName}Fo;
+import ${coreModel.basePackage}.pojo.qo.${coreModel.entityName}Qo;
+import ${coreModel.basePackage}.pojo.so.${coreModel.entityName}So;
+import ${coreModel.basePackage}.pojo.to.${coreModel.entityName}To;
+import ${coreModel.basePackage}.pojo.vo.${coreModel.entityName}Vo;
 import pers.yurwisher.wisp.wrapper.PageR;
-</#if>
-<#if soClass??>
-import ${soClass};
 import java.util.List;
-</#if>
-<#if toClass??>
-import ${toClass};
-</#if>
+
+
 
 /**
- * @author ${author}
- * @date ${date?string("yyyy-MM-dd HH:mm:ss")}
- * @description ${description}
+ * @author ${coreModel.author}
+ * @date ${coreModel.date?string("yyyy-MM-dd HH:mm:ss")}
+ * @description ${coreModel.description}
  * @since V1.0.0
  */
-public interface ${serviceName} extends ${superServiceName}<${entityName}> {
-    <#if foClass??>
+public interface I${coreModel.entityName}Service extends ${superServiceName}<${coreModel.entityName}> {
+
     /**
      * 新增
      * @param fo 参数
      */
-    void create(${entityName}Fo fo);
+    void create(${coreModel.entityName}Fo fo);
 
     /**
      * 更新
      * @param id 主键
      * @param fo 参数
      */
-    void update(${idType} id,${entityName}Fo fo);
-    </#if>
-    <#if qoClass??&&toClass??>
+    void update(${coreModel.idType} id,${coreModel.entityName}Fo fo);
+
     /**
      * 列表
      * @param qo 查询参数
      * @return 分页对象
      */
-    PageR<${entityName}To> list(${entityName}Qo qo);
-    </#if>
-    <#if soClass??>
+    PageR<${coreModel.entityName}To> list(${coreModel.entityName}Qo qo);
+
     /**
     * 下拉列表
     * @return 集合
     */
-    List<${entityName}So> select();
-    </#if>
-    <#if voClass??>
+    List<${coreModel.entityName}So> select();
+
     /**
     * 详情
     * @param id 主键
-    * @return ${entityName}Vo
+    * @return ${coreModel.entityName}Vo
     */
-    ${entityName}Vo get(${idType} id);
-    </#if>
+    ${coreModel.entityName}Vo get(${coreModel.idType} id);
+
      /**
      * 删除
      * @param id 主键
      */
-    void delete(${idType} id);
+    void delete(${coreModel.idType} id);
 }

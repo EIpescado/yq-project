@@ -1,17 +1,18 @@
-package pers.yurwisher.morph.bean;
+package pers.yurwisher.morph.model;
+
+import pers.yurwisher.morph.common.Constant;
 
 import java.util.Date;
 
 /**
  * @author yq
- * @date 2019/06/13 15:42
- * @description
+ * @date 2019/06/14 15:58
+ * @description 基础数据模型
  * @since V1.0.0
  */
-public class CoreInfo {
+public class CoreModel {
 
     private String idType;
-
     /**
      * 作者
      */
@@ -20,18 +21,36 @@ public class CoreInfo {
      * 日期
      */
     private Date date;
-
     /**
      * 实体类全路径名称
      */
     private String entityClass;
 
     private String entityName;
-
     /**
      * 类描述
      */
     private String description;
+
+    private String basePackage;
+
+    public CoreModel(String idType, String author, String entityClass , String description, String basePackage) {
+        this.idType = idType;
+        this.author = author;
+        this.date = new Date();
+        this.entityClass = entityClass;
+        this.entityName = entityClass.substring(entityClass.lastIndexOf(Constant.DOT) + 1);
+        this.description = description;
+        this.basePackage = basePackage;
+    }
+
+    public String getIdType() {
+        return idType;
+    }
+
+    public void setIdType(String idType) {
+        this.idType = idType;
+    }
 
     public String getAuthor() {
         return author;
@@ -73,11 +92,12 @@ public class CoreInfo {
         this.description = description;
     }
 
-    public String getIdType() {
-        return idType;
+    public String getBasePackage() {
+        return basePackage;
     }
 
-    public void setIdType(String idType) {
-        this.idType = idType;
+    public void setBasePackage(String basePackage) {
+        this.basePackage = basePackage;
     }
+
 }

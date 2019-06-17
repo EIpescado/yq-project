@@ -1,4 +1,4 @@
-package pers.yurwisher.morph.bean;
+package pers.yurwisher.morph.model;
 
 import java.util.Objects;
 

@@ -1,4 +1,4 @@
-package ${packageName};
+package ${coreModel.basePackage}.pojo.${flag?lower_case};
 
 <#if superClass??>
 import ${superClass};
@@ -14,9 +14,9 @@ import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 </#if>
 /**
- * @author ${author}
- * @date ${date?string("yyyy-MM-dd HH:mm:ss")}
- * @description ${description}
+ * @author ${coreModel.author}
+ * @date ${coreModel.date?string("yyyy-MM-dd HH:mm:ss")}
+ * @description ${coreModel.description} ${flag}
  * @since V1.0.0
  */
 <#if useLombok>
@@ -29,9 +29,9 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 </#if>
 <#if superClassName??>
-public class ${entityName} extends ${superClassName} {
+public class ${coreModel.entityName}${flag} extends ${superClassName} {
 <#else>
-public class ${entityName} implements Serializable {
+public class ${coreModel.entityName}${flag} implements Serializable {
     private static final long serialVersionUID = 1L;
 </#if>
 <#list fields as field>
@@ -43,7 +43,7 @@ public class ${entityName} implements Serializable {
         return ${field.propertyName};
     }
 
-    public ${entityName} set${field.propertyName?cap_first}(${field.propertyType} ${field.propertyName}) {
+    public ${coreModel.entityName} set${field.propertyName?cap_first}(${field.propertyType} ${field.propertyName}) {
         this.${field.propertyName} = ${field.propertyName};
         return this;
     }
@@ -52,7 +52,7 @@ public class ${entityName} implements Serializable {
 <#if !useLombok>
     @Override
     public String toString() {
-        return "${entityName}{" +
+        return "${coreModel.entityName}{" +
         <#list fields as field>
             <#if field_index==0>
             "${field.propertyName}=" + ${field.propertyName} +

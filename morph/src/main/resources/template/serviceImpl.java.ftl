@@ -1,44 +1,33 @@
-package ${serviceImplPackageName};
+package ${coreModel.basePackage}.service.impl;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ${entityClass};
-import ${mapperPackageName}.${entityName}Mapper;
-import ${superServiceClass};
-<#if foClass??>
-import ${foClass};
-</#if>
-<#if voClass??>
-import ${voClass};
-</#if>
-<#if qoClass??>
-import ${qoClass};
+import ${coreModel.entityClass};
+import ${coreModel.basePackage}.mapper.${coreModel.entityName}Mapper;
+import ${coreModel.basePackage}.service.I${coreModel.entityName}Service;
+import ${coreModel.basePackage}.pojo.fo.${coreModel.entityName}Fo;
+import ${coreModel.basePackage}.pojo.qo.${coreModel.entityName}Qo;
+import ${coreModel.basePackage}.pojo.so.${coreModel.entityName}So;
+import ${coreModel.basePackage}.pojo.to.${coreModel.entityName}To;
+import ${coreModel.basePackage}.pojo.vo.${coreModel.entityName}Vo;
 import pers.yurwisher.wisp.wrapper.PageR;
-</#if>
-<#if soClass??>
-import ${soClass};
 import java.util.List;
-</#if>
-<#if toClass??>
-import ${toClass};
-</#if>
 
 /**
- * @author ${author}
- * @date ${date?string("yyyy-MM-dd HH:mm:ss")}
- * @description ${description}
+ * @author ${coreModel.author}
+ * @date ${coreModel.date?string("yyyy-MM-dd HH:mm:ss")}
+ * @description ${coreModel.description}
  * @since V1.0.0
  */
 @Service
-public class ${serviceName} extends ${baseImplServiceName}<${entityName}Mapper,${entityName}> implements ${superServiceName}{
-    <#if foClass??>
+public class ${coreModel.entityName}ServiceImpl extends ${superServiceName}Impl<${coreModel.entityName}Mapper,${coreModel.entityName}> implements I${coreModel.entityName}Service{
     /**
      * 新增
      * @param fo 参数
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void create(${entityName}Fo fo){
+    public void create(${coreModel.entityName}Fo fo){
 
     }
 
@@ -49,49 +38,46 @@ public class ${serviceName} extends ${baseImplServiceName}<${entityName}Mapper,$
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void update(${idType} id,${entityName}Fo fo){
+    public void update(${coreModel.idType} id,${coreModel.entityName}Fo fo){
 
     }
-    </#if>
-    <#if qoClass??&&toClass??>
+
     /**
      * 列表
      * @param qo 查询参数
      * @return 分页对象
      */
     @Override
-    public PageR<${entityName}To> list(${entityName}Qo qo){
+    public PageR<${coreModel.entityName}To> list(${coreModel.entityName}Qo qo){
         return null;
     }
-    </#if>
-    <#if soClass??>
+
     /**
     * 下拉列表
     * @return 集合
     */
     @Override
-    public List<${entityName}So> select(){
+    public List<${coreModel.entityName}So> select(){
         return null;
     }
-    </#if>
-    <#if voClass??>
+
     /**
     * 详情
     * @param id 主键
-    * @return ${entityName}Vo
+    * @return ${coreModel.entityName}Vo
     */
     @Override
-    public ${entityName}Vo get(${idType} id){
+    public ${coreModel.entityName}Vo get(${coreModel.idType} id){
         return null;
     }
-    </#if>
+
      /**
      * 删除
      * @param id 主键
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void delete(${idType} id){
+    public void delete(${coreModel.idType} id){
 
     }
 }
