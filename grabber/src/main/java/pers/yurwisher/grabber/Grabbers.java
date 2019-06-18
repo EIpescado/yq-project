@@ -3,6 +3,7 @@ package pers.yurwisher.grabber;
 import pers.yurwisher.grabber.customs.CustomsGrabber;
 import pers.yurwisher.grabber.exchangerate.ExchangeRateGrabber;
 import pers.yurwisher.grabber.express.Kuaidi100Grabber;
+import pers.yurwisher.grabber.maoyan.BoxOfficeGrabber;
 import pers.yurwisher.grabber.singlewindow.SingleWindowGrabber;
 
 /**
@@ -19,6 +20,7 @@ public class Grabbers {
     private static ExchangeRateGrabber exchangeRateGrabber;
     private static Kuaidi100Grabber kuaidi100Grabber;
     private static SingleWindowGrabber singleWindowGrabber;
+    private static BoxOfficeGrabber boxOfficeGrabber;
 
     static {
         customsGrabber = new CustomsGrabber();
@@ -26,6 +28,7 @@ public class Grabbers {
         HttpClientHelper httpClientHelper = new HttpClientHelper();
         kuaidi100Grabber = new Kuaidi100Grabber(httpClientHelper);
         singleWindowGrabber = new SingleWindowGrabber(httpClientHelper);
+        boxOfficeGrabber = new BoxOfficeGrabber(httpClientHelper);
     }
 
     public static CustomsGrabber getCustomsGrabber() {
@@ -42,5 +45,9 @@ public class Grabbers {
 
     public static SingleWindowGrabber getSingleWindowGrabber() {
         return singleWindowGrabber;
+    }
+
+    public static BoxOfficeGrabber getBoxOfficeGrabber() {
+        return boxOfficeGrabber;
     }
 }
