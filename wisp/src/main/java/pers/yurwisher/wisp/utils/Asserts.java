@@ -1,6 +1,7 @@
 package pers.yurwisher.wisp.utils;
 
 import pers.yurwisher.wisp.enums.CustomTipEnum;
+import pers.yurwisher.wisp.enums.ICustomTipEnum;
 import pers.yurwisher.wisp.exception.CustomException;
 import pers.yurwisher.wisp.wrapper.CustomTip;
 
@@ -415,6 +416,18 @@ public class Asserts {
     public static void lessThenZero(BigDecimal bigDecimal,String message) {
         if (bigDecimal != null && !NumberUtils.lessThenZero(bigDecimal)) {
             throw new CustomException(generateError(CustomTipEnum.MUST_LESS_THEN_0,message));
+        }
+    }
+
+    public static void mustTrue(boolean express, ICustomTipEnum tip) {
+        if (!express) {
+            throw new CustomException(tip);
+        }
+    }
+
+    public static void mustFalse(boolean express, ICustomTipEnum tip) {
+        if (express) {
+            throw new CustomException(tip);
         }
     }
 }

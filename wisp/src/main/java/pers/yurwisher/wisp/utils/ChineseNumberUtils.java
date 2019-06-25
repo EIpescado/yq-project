@@ -12,7 +12,7 @@ import java.util.Map;
  */
 public class ChineseNumberUtils {
 
-    private ChineseNumberUtils(){
+    private ChineseNumberUtils() {
 
     }
 
@@ -58,11 +58,9 @@ public class ChineseNumberUtils {
     /**
      * 中文转阿拉伯数字
      */
-    public static BigDecimal chinese2Number(String text) {
+    private static BigDecimal chinese2Number(String text) {
         if (StringUtils.isNotEmpty(text)) {
-            //块 -> 元  , 毛  -> 角
-            text = text.replaceAll("块","元");
-            text = text.replaceAll("毛","角");
+            text = replaceAllChineseSpecialExpress(text);
             //亿级以上单独处理
             if (text.contains("亿")) {
                 return textToBigDecimalOverYi(text);
@@ -71,6 +69,17 @@ public class ChineseNumberUtils {
             }
         }
         return null;
+    }
+
+    /**
+     * 块 -> 元  , 毛  -> 角 ,两 -> 二
+     *
+     * @param text 原始文本
+     */
+    private static String replaceAllChineseSpecialExpress(String text) {
+        return text.replaceAll("块", "元")
+                .replaceAll("毛", "角")
+                .replaceAll("两", "二");
     }
 
     private static BigDecimal textToBigDecimalOverYi(String text) {
@@ -165,32 +174,70 @@ public class ChineseNumberUtils {
     }
 
     /**
-     * 字符串中第一个中文数字的索引值
+     * 中文表达转数字,如吃饭一百 转为吃饭100
+     * @param text 原始文本
+     * @return 拆分后结果
      */
-    public static int firstChineseNumberIndex(String x){
-        int index = -1 ;
-        for(Map.Entry<String,BigDecimal> entry : CN_NUMBER_MAP.entrySet()){
-            index = x.lastIndexOf(entry.getKey());
-            if(index != -1 ){
-                break;
+    public static String chineseToNumber(String text){
+        StringBuilder sb = new StringBuilder();
+        text = replaceAllChineseSpecialExpress(text);
+        //上一个字符串是否是值或者单位
+        boolean previousOneIsValueOrUnit =false ;
+        //数值builder
+        StringBuilder numberBuilder = new StringBuilder();
+        //文本builder
+        StringBuilder textBuilder = new StringBuilder();
+        //拆分文本 比如 吃饭一百五好贵啊 ,拆分成 吃饭 ,一百五,好贵啊
+        for (int i = 0, length = text.length(); i < length; i++) {
+            String iChar = String.valueOf(text.charAt(i));
+            if(i == 0){
+                previousOneIsValueOrUnit = CN_NUMBER_MAP.containsKey(iChar) || CN_UNIT_MAP.containsKey(iChar);
+            }
+            //值 或者 单位
+            if (CN_NUMBER_MAP.containsKey(iChar) || CN_UNIT_MAP.containsKey(iChar)) {
+                if(!previousOneIsValueOrUnit){
+                    sb.append(textBuilder.toString());
+                    textBuilder.delete(0,textBuilder.length());
+                }
+                numberBuilder.append(iChar);
+                previousOneIsValueOrUnit = true;
+            } else {
+                //既不是值也不是单位
+                if(previousOneIsValueOrUnit){
+                    sb.append(chinese2Number(numberBuilder.toString()));
+                    numberBuilder.delete(0,numberBuilder.length());
+                }
+                textBuilder.append(iChar);
+                previousOneIsValueOrUnit = false;
             }
         }
-        return index;
+        if(textBuilder.length() > 0){
+            sb.append(textBuilder.toString());
+        }
+        if(numberBuilder.length() > 0){
+            sb.append(chinese2Number(numberBuilder.toString()));
+        }
+        return sb.toString();
     }
+
     public static void main(String[] args) {
-        System.out.println(chinese2Number("六万亿"));
-        System.out.println(chinese2Number("六元五"));
-        System.out.println(chinese2Number("七千二"));
-        System.out.println(chinese2Number("九千三"));
-        System.out.println(chinese2Number("三十二千"));
-        System.out.println(chinese2Number("零一千万零八块九毛零分"));
-        System.out.println(chinese2Number("一千零一万七千零三十"));
-        System.out.println(chinese2Number("三千四百三十万"));
-        System.out.println(chinese2Number("三千四百三十二万"));
-        System.out.println(chinese2Number("三千四百三十二万八"));
-        System.out.println(chinese2Number("三千四百三十二万八千四百三十三元五角六分"));
-        System.out.println(chinese2Number("六亿三元四角八分"));
-        System.out.println(chinese2Number("八万六千七百三十二亿九千七百二十三万五千七百三十二元六角七分"));
-        System.out.println(chinese2Number("六千七百三十二亿九千七百二十三万五千七百三十二元六角七分"));
+        System.out.println(chineseToNumber("六万亿"));
+        System.out.println(chineseToNumber("六元五"));
+        System.out.println(chineseToNumber("七千二"));
+        System.out.println(chineseToNumber("九千三"));
+        System.out.println(chineseToNumber("三十二千"));
+        System.out.println(chineseToNumber("零一千万零八块九毛零分"));
+        System.out.println(chineseToNumber("一千零一万七千零三十"));
+        System.out.println(chineseToNumber("三千四百三十万"));
+        System.out.println(chineseToNumber("三千四百三十二万"));
+        System.out.println(chineseToNumber("三千四百三十二万八"));
+        System.out.println(chineseToNumber("三千四百三十二万八千四百三十三元五角六分"));
+        System.out.println(chineseToNumber("六亿三元四角八分"));
+        System.out.println(chineseToNumber("八万六千七百三十二亿九千七百二十三万五千七百三十二元六角七分"));
+        System.out.println(chineseToNumber("六千七百三十二亿九千七百二十三万五千七百三十二元六角七分"));
+        System.out.println(chineseToNumber("吃饭原价一百五打完折一百"));
+        System.out.println(chineseToNumber("吃饭一百五好贵啊"));
+        System.out.println(chineseToNumber("一百万人吃饭花了两千四百万,你们也是厉害"));
+        System.out.println(chineseToNumber("一百万人两千四百万的花费打完折三千"));
     }
 }
