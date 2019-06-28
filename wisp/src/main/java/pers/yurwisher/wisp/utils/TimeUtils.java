@@ -17,6 +17,8 @@ public class TimeUtils {
 
     private static  final DateTimeFormatter YYYY_MM_DD_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
+    private static  final DateTimeFormatter YYYY_MM_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM");
+
     private static  final DateTimeFormatter YYYYMMDD_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMdd");
 
     private TimeUtils(){
@@ -37,6 +39,27 @@ public class TimeUtils {
         return null;
     }
 
+    public static String parseYM(LocalDateTime dateTime){
+        if(dateTime != null){
+            return dateTime.format(YYYY_MM_FORMATTER);
+        }
+        return null;
+    }
+
+    public static String parseYMD(LocalDate dateTime){
+        if(dateTime != null){
+            return dateTime.format(YYYY_MM_DD_FORMATTER);
+        }
+        return null;
+    }
+
+    public static String parseYM(LocalDate dateTime){
+        if(dateTime != null){
+            return dateTime.format(YYYY_MM_FORMATTER);
+        }
+        return null;
+    }
+
     public static String parseYYYYMMDD(LocalDateTime dateTime){
         if(dateTime != null){
             return dateTime.format(YYYYMMDD_FORMATTER);
@@ -46,6 +69,10 @@ public class TimeUtils {
 
     public static LocalDateTime format(String s){
        return LocalDate.parse(s,YYYY_MM_DD_FORMATTER).atStartOfDay();
+    }
+
+    public static LocalDate formatDate(String s){
+        return LocalDate.parse(s,YYYY_MM_DD_FORMATTER);
     }
 
     public static long getTimeMillis(LocalDateTime dateTime){

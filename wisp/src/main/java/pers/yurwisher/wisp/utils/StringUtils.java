@@ -1,6 +1,9 @@
 package pers.yurwisher.wisp.utils;
 
+import java.sql.SQLOutput;
+import java.util.Random;
 import java.util.StringTokenizer;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -9,35 +12,47 @@ import java.util.regex.Pattern;
  */
 public class StringUtils {
 
-    /**匹配所有特殊字符的正则表达式*/
+    /**
+     * 匹配所有特殊字符的正则表达式
+     */
     private static final String SPECIAL_CHARACTER_REGEX = "[`~!@#$%^&*()\\-+=|{}':;',\\[\\].<>/?~！@#￥%……&*（）—_+|{}【】‘；：”“’。，、\"？\\s]";
 
     private static final String SPECIAL_CHARACTER_REGEX_2 = "[`~!@#$%^&*()\\-+=|{}':;',\\[\\]<>/?~！@#￥%……&*（）—_+|{}【】‘；：”“’。，、\"？\\s]";
 
-    private static final Pattern SPECIAL_CHARACTER_PATTERN = Pattern.compile(SPECIAL_CHARACTER_REGEX) ;
+    private static final Pattern SPECIAL_CHARACTER_PATTERN = Pattern.compile(SPECIAL_CHARACTER_REGEX);
 
-    private static final Pattern SPECIAL_CHARACTER_PATTERN_2 = Pattern.compile(SPECIAL_CHARACTER_REGEX_2) ;
+    private static final Pattern SPECIAL_CHARACTER_PATTERN_2 = Pattern.compile(SPECIAL_CHARACTER_REGEX_2);
 
-    /**中文正则*/
-    private static final String CHINESE_REGEX = "[\u4e00-\u9fa5]" ;
+    /**
+     * 中文正则
+     */
+    private static final String CHINESE_REGEX = "[\u4e00-\u9fa5]";
 
-    private static final Pattern CHINESE_REGEX_PATTERN = Pattern.compile(CHINESE_REGEX) ;
+    private static final Pattern CHINESE_REGEX_PATTERN = Pattern.compile(CHINESE_REGEX);
 
-    /**数字正则*/
-    private static final String NUMBER_REGEX = ".*\\d+.*" ;
+    /**
+     * 数字正则
+     */
+    private static final String NUMBER_REGEX = ".*\\d+.*";
 
-    private static final Pattern NUMBER_REGEX_PATTERN = Pattern.compile(NUMBER_REGEX) ;
+    private static final Pattern NUMBER_REGEX_PATTERN = Pattern.compile(NUMBER_REGEX);
 
-    /**匹配括号中间内容*/
+    /**
+     * 匹配括号中间内容
+     */
     private static final Pattern BRACKET_CONTENT_PATTERN = Pattern.compile("(?<=\\()(.+?)(?=\\))");
 
     private static final char UNDERLINE = '_';
 
 
-    /**纯数字正则*/
-    private static final String PURE_NUMBER_REGEX = "[0-9]*" ;
+    /**
+     * 纯数字正则
+     */
+    private static final String PURE_NUMBER_REGEX = "[0-9]*";
 
-    private static final Pattern PURE_NUMBER_REGEX_PATTERN = Pattern.compile(PURE_NUMBER_REGEX) ;
+    private static final Pattern PURE_NUMBER_REGEX_PATTERN = Pattern.compile(PURE_NUMBER_REGEX);
+
+    private static final String VERIFICATION_CODE_CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
     private StringUtils() {
     }
@@ -46,14 +61,14 @@ public class StringUtils {
      * 二进制转字符串
      */
     static String byte2hex(byte[] b) {
-        String hs = "" ;
-        String stmp = "" ;
+        String hs = "";
+        String stmp = "";
         for (int n = 0; n < b.length; n++) {
-            stmp = (Integer.toHexString(b[n] & 0XFF)) ;
-            if (stmp.length() == 1){
-                hs = hs + "0" + stmp ;
-            } else{
-                hs = hs + stmp ;
+            stmp = (Integer.toHexString(b[n] & 0XFF));
+            if (stmp.length() == 1) {
+                hs = hs + "0" + stmp;
+            } else {
+                hs = hs + stmp;
             }
         }
         return hs.toUpperCase();
@@ -62,10 +77,10 @@ public class StringUtils {
     /**
      * 字符串去左右空格
      */
-    public static  String null2EmptyWithTrim(String s) {
+    public static String null2EmptyWithTrim(String s) {
         if (s == null) {
             return "";
-        }else{
+        } else {
             return s.trim();
         }
     }
@@ -73,8 +88,7 @@ public class StringUtils {
     /**
      * 字符串去左右空格
      */
-    public static  String null2EmptyWithTrimNew(Object s)
-    {
+    public static String null2EmptyWithTrimNew(Object s) {
 
         if (s == null || "NULL".equalsIgnoreCase(s.toString())) {
             return "";
@@ -86,42 +100,43 @@ public class StringUtils {
     /**
      * 字符串是否为空
      */
-    public static  boolean isEmpty(String foo) {
+    public static boolean isEmpty(String foo) {
         return (foo == null || foo.trim().length() == 0);
     }
 
     /**
      * 字符串是否为空
      */
-    public static  boolean isEmpty(CharSequence foo) {
+    public static boolean isEmpty(CharSequence foo) {
         return foo == null || foo.length() == 0;
     }
 
     /**
      * 字符串是否不为空
      */
-    public static  boolean isNotEmpty(String foo) {
+    public static boolean isNotEmpty(String foo) {
         return (null != foo && foo.trim().length() > 0);
     }
 
-    public static boolean isNotEmpty(CharSequence cs){
+    public static boolean isNotEmpty(CharSequence cs) {
         return cs == null || cs.length() == 0;
     }
 
     /**
      * 计算一个字符串的长度，汉字当成两个字符计算，ascii英文字符当成一个。
+     *
      * @param aStr 要计算长度的目标字符串
      * @return 计算出的长度
      */
     public static int lengthOfCN(String aStr) {
         char c;
         int length = 0;
-        if(isNotEmpty(aStr)){
+        if (isNotEmpty(aStr)) {
             for (int i = 0; i < aStr.length(); i++) {
                 c = aStr.charAt(i);
                 if (c >= 127) {
                     length += 2;
-                }else{
+                } else {
                     length += 1;
                 }
             }
@@ -132,13 +147,13 @@ public class StringUtils {
     /**
      * 字符串首字母大写或小写
      */
-    public static String firstLetterUpperOrLower(String str,boolean isLowerCase) {
-        if (isNotEmpty(str)){
+    public static String firstLetterUpperOrLower(String str, boolean isLowerCase) {
+        if (isNotEmpty(str)) {
             if (str.length() == 1) {
-                return isLowerCase ? str.toLowerCase() : str.toUpperCase() ;
-            }else{
+                return isLowerCase ? str.toLowerCase() : str.toUpperCase();
+            } else {
                 String first = str.substring(0, 1).toLowerCase();
-                first = isLowerCase ? first.toLowerCase() : first.toUpperCase() ;
+                first = isLowerCase ? first.toLowerCase() : first.toUpperCase();
                 return (first + str.substring(1));
             }
         }
@@ -166,8 +181,8 @@ public class StringUtils {
      * 判断str是否在strArr中
      */
     public static boolean strInArray(String str, String[] strArr) {
-        for(String s : strArr){
-            if (str.equals(s)){
+        for (String s : strArr) {
+            if (str.equals(s)) {
                 return true;
             }
         }
@@ -185,7 +200,7 @@ public class StringUtils {
         String[] values = new String[st.countTokens()];
         int pos = 0;
         //是否还有分隔符
-        while (st.hasMoreTokens()){
+        while (st.hasMoreTokens()) {
             //返回从当前位置到下一个分隔符的字符串
             values[pos++] = st.nextToken();
         }
@@ -196,9 +211,9 @@ public class StringUtils {
      * 判断字符串中是否包含中文
      */
     public static boolean isContainChinese(String str) {
-        if(isNotEmpty(str)){
+        if (isNotEmpty(str)) {
             Matcher m = CHINESE_REGEX_PATTERN.matcher(str);
-            return  m.find() ;
+            return m.find();
         }
         return false;
     }
@@ -206,30 +221,32 @@ public class StringUtils {
     /**
      * 获取字符串中所有中文
      */
-    public static String getAllChineseInStr(String str){
-        return  str.replaceAll("[^\u4e00-\u9fa5]", "") ;
+    public static String getAllChineseInStr(String str) {
+        return str.replaceAll("[^\u4e00-\u9fa5]", "");
     }
 
     /**
      * 获取括号内内容
+     *
      * @param str
      */
-    public static  String getBracketContent(String str){
+    public static String getBracketContent(String str) {
         Matcher matcher = BRACKET_CONTENT_PATTERN.matcher(str);
-        if(matcher.find()){
-            return  matcher.group(0);
-        }else {
+        if (matcher.find()) {
+            return matcher.group(0);
+        } else {
             return "";
         }
     }
 
     /**
      * 左补全字符
+     *
      * @param w84PaddingStr 需要补全的字符
-     * @param digit 补全后字符的位数
-     * @param paddingStr 补全使用的字符
+     * @param digit         补全后字符的位数
+     * @param paddingStr    补全使用的字符
      */
-    public static String leftPadding(String w84PaddingStr,int digit,String paddingStr){
+    public static String leftPadding(String w84PaddingStr, int digit, String paddingStr) {
         w84PaddingStr = null2EmptyWithTrim(w84PaddingStr);
         StringBuffer sb = new StringBuffer();
         for (int i = 0; i < digit - w84PaddingStr.length(); i++) {
@@ -241,11 +258,12 @@ public class StringUtils {
 
     /**
      * 右补全字符
+     *
      * @param w84PaddingStr 需要补全的字符
-     * @param digit 补全后字符的位数
-     * @param paddingStr 补全使用的字符
+     * @param digit         补全后字符的位数
+     * @param paddingStr    补全使用的字符
      */
-    public static String rightPadding(String w84PaddingStr,int digit,String paddingStr){
+    public static String rightPadding(String w84PaddingStr, int digit, String paddingStr) {
         w84PaddingStr = null2EmptyWithTrim(w84PaddingStr);
         StringBuffer sb = new StringBuffer();
         sb.append(w84PaddingStr);
@@ -257,16 +275,18 @@ public class StringUtils {
 
     /**
      * 月份补全 2位
+     *
      * @param month 月份
      */
-    public static String monthPadding(int month){
-        return leftPadding(Integer.valueOf(month).toString(),2,"0");
+    public static String monthPadding(int month) {
+        return leftPadding(Integer.valueOf(month).toString(), 2, "0");
     }
 
     /**
      * 格式化字符串
+     *
      * @param template 模版字符 占位使用%s
-     * @param args 参数
+     * @param args     参数
      */
     public static String format(String template, Object... args) {
         template = String.valueOf(template);
@@ -275,9 +295,9 @@ public class StringUtils {
 
         int i;
         int placeholderStart;
-        for(i = 0; i < args.length; templateStart = placeholderStart + 2) {
+        for (i = 0; i < args.length; templateStart = placeholderStart + 2) {
             placeholderStart = template.indexOf("%s", templateStart);
-            if(placeholderStart == -1) {
+            if (placeholderStart == -1) {
                 break;
             }
 
@@ -286,11 +306,11 @@ public class StringUtils {
         }
 
         builder.append(template.substring(templateStart));
-        if(i < args.length) {
+        if (i < args.length) {
             builder.append(" [");
             builder.append(args[i++]);
 
-            while(i < args.length) {
+            while (i < args.length) {
                 builder.append(", ");
                 builder.append(args[i++]);
             }
@@ -328,11 +348,12 @@ public class StringUtils {
 
     /**
      * 是否包含数字
+     *
      * @param content 字符串
      * @return 是否包含
      */
-    public static boolean isContainNumber(String content){
-        if(isNotEmpty(content)){
+    public static boolean isContainNumber(String content) {
+        if (isNotEmpty(content)) {
             Matcher m = NUMBER_REGEX_PATTERN.matcher(content);
             return m.matches();
         }
@@ -341,11 +362,12 @@ public class StringUtils {
 
     /**
      * 是否不以数字结尾
+     *
      * @param content 字符串
      * @return boolean
      */
-    public static boolean isNotEndOfNumber(String content){
-        if(isNotEmpty(content)){
+    public static boolean isNotEndOfNumber(String content) {
+        if (isNotEmpty(content)) {
             return !isContainNumber(Character.toString(content.charAt(content.length() - 1)));
         }
         return false;
@@ -353,24 +375,25 @@ public class StringUtils {
 
     /**
      * 字符串是否为纯数字
+     *
      * @param content 字符串
      * @return 是否为纯数字
      */
     public static boolean isNumeric(String content) {
-        if(isNotEmpty(content)){
+        if (isNotEmpty(content)) {
             Matcher isNum = PURE_NUMBER_REGEX_PATTERN.matcher(content);
             return isNum.matches();
         }
         return false;
     }
 
-    public static boolean isStringHaveChange(String a,String b){
-        if(isEmpty(a)){
-            return isNotEmpty(b) ;
+    public static boolean isStringHaveChange(String a, String b) {
+        if (isEmpty(a)) {
+            return isNotEmpty(b);
         }
-        if(isNotEmpty(b)){
+        if (isNotEmpty(b)) {
             return !null2EmptyWithTrimNew(a).equals(null2EmptyWithTrimNew(b));
-        }else{
+        } else {
             return false;
         }
     }
@@ -378,12 +401,11 @@ public class StringUtils {
     public static boolean isBlank(CharSequence cs) {
         int strLen;
         if (cs != null && (strLen = cs.length()) != 0) {
-            for(int i = 0; i < strLen; ++i) {
+            for (int i = 0; i < strLen; ++i) {
                 if (!Character.isWhitespace(cs.charAt(i))) {
                     return false;
                 }
             }
-
             return true;
         } else {
             return true;
@@ -392,5 +414,13 @@ public class StringUtils {
 
     public static boolean isNotBlank(CharSequence cs) {
         return !isBlank(cs);
+    }
+
+    public static String random(int length) {
+        StringBuffer sb = new StringBuffer();
+        for (int i = 0; i < length; i++) {
+            sb.append(VERIFICATION_CODE_CHARS.charAt(ThreadLocalRandom.current().nextInt(62)));
+        }
+        return sb.toString();
     }
 }
