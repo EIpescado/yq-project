@@ -14,6 +14,7 @@ public class CoreConfigBuilder {
     private String soSuperClass;
     private String toSuperClass;
     private String serviceSuperClass;
+    private String serviceImplSuperClass;
     private String controllerSuperClass;
     private Boolean useLombok;
 
@@ -82,7 +83,12 @@ public class CoreConfigBuilder {
         return this;
     }
 
+    public CoreConfigBuilder setServiceImplSuperClass(String serviceImplSuperClass) {
+        this.serviceImplSuperClass = serviceImplSuperClass;
+        return this;
+    }
+
     public CoreConfig build() {
-        return new CoreConfig(vo, qo, fo, so, to, voSuperClass, qoSuperClass, foSuperClass, soSuperClass, toSuperClass, serviceSuperClass, controllerSuperClass, useLombok);
+        return new CoreConfig(vo, qo, fo, so, to, voSuperClass, qoSuperClass, foSuperClass, soSuperClass, toSuperClass, serviceSuperClass,serviceImplSuperClass, controllerSuperClass, useLombok);
     }
 }

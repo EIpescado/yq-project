@@ -74,7 +74,7 @@ public class CoreGenerator implements Generator {
     }
 
     private void generateService(CoreConfig coreConfig, CoreModel coreModel) {
-        ServiceModel serviceModel = new ServiceModel(coreModel, coreConfig.getServiceSuperClass());
+        ServiceModel serviceModel = new ServiceModel(coreModel, coreConfig.getServiceSuperClass(),coreConfig.getServiceImplSuperClass());
         //service接口
         generate(serviceModel, serviceFolderPath(coreModel, false), serviceFileName(coreModel, false), "/template/service.java.ftl");
         //service实现类

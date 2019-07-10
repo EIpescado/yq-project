@@ -2,6 +2,7 @@ package ${coreModel.basePackage}.service.impl;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ${superServiceImplClass};
 import ${coreModel.entityClass};
 import ${coreModel.basePackage}.mapper.${coreModel.entityName}Mapper;
 import ${coreModel.basePackage}.service.I${coreModel.entityName}Service;

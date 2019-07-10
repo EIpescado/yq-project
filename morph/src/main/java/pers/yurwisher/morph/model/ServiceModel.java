@@ -20,9 +20,12 @@ public class ServiceModel {
 
     private String superServiceName;
 
-    public ServiceModel(CoreModel coreModel, String superServiceClass) {
+    private String superServiceImplClass;
+
+    public ServiceModel(CoreModel coreModel, String superServiceClass,String superServiceImplClass) {
         this.coreModel = coreModel;
         this.superServiceClass = superServiceClass;
+        this.superServiceImplClass = superServiceImplClass;
         this.superServiceName = Utils.isEmpty(superServiceClass) ? null : superServiceClass.substring(superServiceClass.lastIndexOf(Constant.DOT) + 1);
     }
 
@@ -48,5 +51,13 @@ public class ServiceModel {
 
     public void setSuperServiceName(String superServiceName) {
         this.superServiceName = superServiceName;
+    }
+
+    public String getSuperServiceImplClass() {
+        return superServiceImplClass;
+    }
+
+    public void setSuperServiceImplClass(String superServiceImplClass) {
+        this.superServiceImplClass = superServiceImplClass;
     }
 }
