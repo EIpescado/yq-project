@@ -9,6 +9,7 @@ morph.modelBuilder().setIdType("Long")
         .setEntityClass("pers.yurwisher.morph.entity.Test")
         .setDescription("entity test ,for test");
 morph.configBuilder().setServiceSuperClass("pers.yurwisher.morph.service.BaseService")
+        .setServiceImplSuperClass("pers.yurwisher.morph.service.impl.BaseServiceImpl")
         .setControllerSuperClass("pers.yurwisher.morph.controller.BaseController");
 morph.wave();
 ```
