@@ -16,6 +16,8 @@ public class CoreConfigBuilder {
     private String serviceSuperClass;
     private String serviceImplSuperClass;
     private String controllerSuperClass;
+    private String mapperSuperClass;
+    private String mapperLocation;
     private Boolean useLombok;
 
     public CoreConfigBuilder setVo(Boolean vo) {
@@ -88,7 +90,17 @@ public class CoreConfigBuilder {
         return this;
     }
 
+    public CoreConfigBuilder setMapperSuperClass(String mapperSuperClass) {
+        this.mapperSuperClass = mapperSuperClass;
+        return this;
+    }
+
+    public CoreConfigBuilder setMapperLocation(String mapperLocation) {
+        this.mapperLocation = mapperLocation;
+        return this;
+    }
+
     public CoreConfig build() {
-        return new CoreConfig(vo, qo, fo, so, to, voSuperClass, qoSuperClass, foSuperClass, soSuperClass, toSuperClass, serviceSuperClass,serviceImplSuperClass, controllerSuperClass, useLombok);
+        return new CoreConfig(vo, qo, fo, so, to, voSuperClass, qoSuperClass, foSuperClass, soSuperClass, toSuperClass, serviceSuperClass,serviceImplSuperClass, controllerSuperClass, useLombok,mapperSuperClass,mapperLocation);
     }
 }

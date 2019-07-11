@@ -21,4 +21,5 @@ public interface Constant {
     String TO ="To";
 
     String DOT_JAVA = ".java";
+    String DOT_XML = ".xml";
 }

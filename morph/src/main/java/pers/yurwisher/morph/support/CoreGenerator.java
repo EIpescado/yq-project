@@ -9,6 +9,7 @@ import pers.yurwisher.morph.common.Utils;
 import pers.yurwisher.morph.model.ControllerModel;
 import pers.yurwisher.morph.model.CoreConfig;
 import pers.yurwisher.morph.model.CoreModel;
+import pers.yurwisher.morph.model.MapperModel;
 import pers.yurwisher.morph.model.ObjectModel;
 import pers.yurwisher.morph.model.ServiceModel;
 import pers.yurwisher.morph.model.builder.CoreConfigBuilder;
@@ -34,6 +35,8 @@ public class CoreGenerator implements Generator {
     public void generate(CoreModel coreModel, CoreConfig config) {
         //生成pojo
         generatePojo(config, coreModel);
+        //生成mapper
+        generateMapper(config,coreModel);
         //生成service
         generateService(config, coreModel);
         //生成controller
@@ -73,12 +76,35 @@ public class CoreGenerator implements Generator {
         generate(objectModel, getFolderPathByFlag(coreModel, flag), getFileName(coreModel, flag), "/template/pojo.java.ftl");
     }
 
+    private void  generateMapper(CoreConfig coreConfig, CoreModel coreModel){
+        MapperModel mapperModel = new MapperModel(coreModel,coreConfig.getMapperSuperClass());
+        //mapper
+        generate(mapperModel, mapperFolderPath(coreModel), mapperFileName(coreModel,Constant.DOT_JAVA), "/template/mapper.java.ftl");
+        //mapper xml
+        generate(mapperModel, mapperXmlFolderPath(coreConfig), mapperFileName(coreModel,Constant.DOT_XML), "/template/mapper.xml.ftl");
+    }
+
     private void generateService(CoreConfig coreConfig, CoreModel coreModel) {
         ServiceModel serviceModel = new ServiceModel(coreModel, coreConfig.getServiceSuperClass(),coreConfig.getServiceImplSuperClass());
         //service接口
         generate(serviceModel, serviceFolderPath(coreModel, false), serviceFileName(coreModel, false), "/template/service.java.ftl");
         //service实现类
         generate(serviceModel, serviceFolderPath(coreModel, true), serviceFileName(coreModel, true), "/template/serviceImpl.java.ftl");
+    }
+
+    private String mapperFolderPath(CoreModel coreModel){
+        StringBuilder sb = new StringBuilder(coreModel.getBasePackage());
+        sb.append(Constant.DOT).append("mapper");
+        return generateOutPutFolderPath("src/main/java",sb.toString());
+    }
+
+
+    private String mapperXmlFolderPath(CoreConfig coreConfig){
+        String mapperLocation = coreConfig.getMapperLocation();
+        if(Utils.isEmpty(mapperLocation)){
+            mapperLocation = "mapper";
+        }
+        return generateOutPutFolderPath("src/main/resources",mapperLocation);
     }
 
     private String serviceFolderPath(CoreModel coreModel, boolean impl) {
@@ -88,6 +114,12 @@ public class CoreGenerator implements Generator {
             sb.append(Constant.DOT).append("impl");
         }
         return generateOutPutFolderPath("src/main/java",sb.toString());
+    }
+
+    private String mapperFileName(CoreModel coreModel,String suffix){
+        StringBuilder sb = new StringBuilder(coreModel.getEntityName());
+        sb.append("Mapper");
+        return sb.append(suffix).toString();
     }
 
     private String serviceFileName(CoreModel coreModel, boolean impl) {

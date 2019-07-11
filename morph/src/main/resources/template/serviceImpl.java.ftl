@@ -1,5 +1,6 @@
 package ${coreModel.basePackage}.service.impl;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ${superServiceImplClass};
@@ -11,6 +12,7 @@ import ${coreModel.basePackage}.pojo.qo.${coreModel.entityName}Qo;
 import ${coreModel.basePackage}.pojo.so.${coreModel.entityName}So;
 import ${coreModel.basePackage}.pojo.to.${coreModel.entityName}To;
 import ${coreModel.basePackage}.pojo.vo.${coreModel.entityName}Vo;
+import pers.yurwisher.wisp.utils.Asserts;
 import pers.yurwisher.wisp.wrapper.PageR;
 import java.util.List;
 
@@ -29,7 +31,9 @@ public class ${coreModel.entityName}ServiceImpl extends ${superServiceName}Impl<
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void create(${coreModel.entityName}Fo fo){
-
+        ${coreModel.entityName}  ${coreModel.entityName?uncap_first} = new ${coreModel.entityName}();
+        BeanUtils.copyProperties(fo,${coreModel.entityName?uncap_first});
+        baseMapper.insert(${coreModel.entityName?uncap_first});
     }
 
     /**
@@ -40,7 +44,10 @@ public class ${coreModel.entityName}ServiceImpl extends ${superServiceName}Impl<
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void update(${coreModel.idType} id,${coreModel.entityName}Fo fo){
-
+        ${coreModel.entityName}  ${coreModel.entityName?uncap_first} = baseMapper.selectById(id);
+        Asserts.notNull(${coreModel.entityName?uncap_first});
+        BeanUtils.copyProperties(fo,${coreModel.entityName?uncap_first});
+        baseMapper.updateById(${coreModel.entityName?uncap_first});
     }
 
     /**
@@ -49,8 +56,9 @@ public class ${coreModel.entityName}ServiceImpl extends ${superServiceName}Impl<
      * @return 分页对象
      */
     @Override
+    @SuppressWarnings("unchecked")
     public PageR<${coreModel.entityName}To> list(${coreModel.entityName}Qo qo){
-        return null;
+        return super.toPageR(baseMapper.list(super.toPage(qo),qo));
     }
 
     /**
@@ -59,7 +67,7 @@ public class ${coreModel.entityName}ServiceImpl extends ${superServiceName}Impl<
     */
     @Override
     public List<${coreModel.entityName}So> select(){
-        return null;
+        return baseMapper.select();
     }
 
     /**
@@ -69,7 +77,7 @@ public class ${coreModel.entityName}ServiceImpl extends ${superServiceName}Impl<
     */
     @Override
     public ${coreModel.entityName}Vo get(${coreModel.idType} id){
-        return null;
+        return baseMapper.get(id);
     }
 
      /**
@@ -79,6 +87,6 @@ public class ${coreModel.entityName}ServiceImpl extends ${superServiceName}Impl<
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void delete(${coreModel.idType} id){
-
+        baseMapper.deleteById(id);
     }
 }

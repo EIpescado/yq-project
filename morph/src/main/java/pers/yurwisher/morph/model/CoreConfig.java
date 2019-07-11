@@ -25,7 +25,13 @@ public class CoreConfig {
 
     private Boolean useLombok;
 
-    public CoreConfig(Boolean vo, Boolean qo, Boolean fo, Boolean so, Boolean to, String voSuperClass, String qoSuperClass, String foSuperClass, String soSuperClass, String toSuperClass, String serviceSuperClass,String serviceImplSuperClass, String controllerSuperClass, Boolean useLombok) {
+    private String mapperSuperClass;
+    private String mapperLocation;
+
+    public CoreConfig(Boolean vo, Boolean qo, Boolean fo, Boolean so, Boolean to, String voSuperClass, String qoSuperClass,
+                      String foSuperClass, String soSuperClass, String toSuperClass, String serviceSuperClass,
+                      String serviceImplSuperClass, String controllerSuperClass, Boolean useLombok,String mapperSuperClass,
+                    String mapperLocation) {
         this.vo = vo == null ? true : vo;
         this.qo = qo == null ? true : qo;
         this.fo = fo == null ? true : fo;
@@ -40,6 +46,8 @@ public class CoreConfig {
         this.serviceImplSuperClass = serviceImplSuperClass;
         this.controllerSuperClass = controllerSuperClass;
         this.useLombok = useLombok;
+        this.mapperSuperClass = mapperSuperClass;
+        this.mapperLocation = mapperLocation;
     }
 
     public Boolean getVo() {
@@ -152,5 +160,21 @@ public class CoreConfig {
 
     public void setServiceImplSuperClass(String serviceImplSuperClass) {
         this.serviceImplSuperClass = serviceImplSuperClass;
+    }
+
+    public String getMapperSuperClass() {
+        return mapperSuperClass;
+    }
+
+    public void setMapperSuperClass(String mapperSuperClass) {
+        this.mapperSuperClass = mapperSuperClass;
+    }
+
+    public String getMapperLocation() {
+        return mapperLocation;
+    }
+
+    public void setMapperLocation(String mapperLocation) {
+        this.mapperLocation = mapperLocation;
     }
 }
