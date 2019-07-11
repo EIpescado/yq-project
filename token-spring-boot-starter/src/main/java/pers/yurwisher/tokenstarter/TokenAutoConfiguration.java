@@ -1,6 +1,5 @@
 package pers.yurwisher.tokenstarter;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -22,8 +21,11 @@ import pers.yurwisher.token.impl.TokenServiceImpl;
 @ConditionalOnProperty(prefix = "yurwisher.token", value = "enable", matchIfMissing = true)
 public class TokenAutoConfiguration {
 
-    @Autowired
     private TokenConfig tokenConfig;
+
+    public TokenAutoConfiguration(TokenConfig tokenConfig) {
+        this.tokenConfig = tokenConfig;
+    }
 
     /**
      * ConditionalOnClass : classpath下存在此类

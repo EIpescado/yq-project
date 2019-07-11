@@ -1,8 +1,5 @@
 package pers.yurwisher.wechatstarter;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -24,10 +21,11 @@ import pers.yurwisher.wechat.open.api.impl.DefaultMiniAppConfigRepository;
 @ConditionalOnProperty(prefix = "yurwisher.wechat.mini-app", value = "enable", matchIfMissing = true)
 public class WeChatMiniAppAutoConfiguration {
 
-    private static final Logger logger = LoggerFactory.getLogger(WeChatMiniAppAutoConfiguration.class);
-
-    @Autowired
     private WeChatMiniAppConfig weChatMiniAppConfig;
+
+    public WeChatMiniAppAutoConfiguration(WeChatMiniAppConfig weChatMiniAppConfig) {
+        this.weChatMiniAppConfig = weChatMiniAppConfig;
+    }
 
     @Bean
     @ConditionalOnClass(value = CoreService.class)

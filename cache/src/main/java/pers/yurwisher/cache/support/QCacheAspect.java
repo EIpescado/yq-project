@@ -6,7 +6,6 @@ import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.stereotype.Component;
 
 /**
  * @author yq
@@ -15,7 +14,6 @@ import org.springframework.stereotype.Component;
  * @since V1.0.0
  */
 @Aspect
-@Component
 public class QCacheAspect {
 
     private QCacheSupport qCacheSupport;

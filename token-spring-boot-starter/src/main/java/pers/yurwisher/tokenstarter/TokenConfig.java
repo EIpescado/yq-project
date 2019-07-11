@@ -39,4 +39,8 @@ public class TokenConfig {
      * 客户自定义token
      */
     private Class<? extends Token> customTokenClass;
+    /**
+     * 是否启用Token
+     */
+    private boolean enable = true;
 }

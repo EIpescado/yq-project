@@ -17,4 +17,8 @@ public class WeChatMiniAppConfig {
     private String appId ;
     /**密钥*/
     private String secret;
+    /**
+     * enable mini-app
+     */
+    private boolean enable = true;
 }

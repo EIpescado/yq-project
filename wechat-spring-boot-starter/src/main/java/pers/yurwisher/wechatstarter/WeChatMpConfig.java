@@ -25,4 +25,8 @@ public class WeChatMpConfig {
      * weChat 服务请求url
      */
     private String serverUrl = "/weChat";
+    /**
+     * enabled wechat mp config
+     */
+    private boolean enable = true;
 }

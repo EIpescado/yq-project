@@ -2,7 +2,7 @@ package pers.yurwisher.wechatstarter;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -27,14 +27,18 @@ import pers.yurwisher.wechat.mp.api.impl.MpServiceImpl;
 @EnableConfigurationProperties(value = WeChatMpConfig.class)
 //表示只有我们的配置文件是否配置了以yq.weChat为前缀的资源项值，并且在该资源项值为enable，如果没有配置我们默认设置为enable
 @ConditionalOnProperty(prefix = "yurwisher.wechat.mp", value = "enable", matchIfMissing = true)
+@ConditionalOnBean(WxMessageRouter.class)
 public class WeChatMpAutoConfiguration {
 
     private static final Logger logger = LoggerFactory.getLogger(WeChatMpAutoConfiguration.class);
 
-    @Autowired
     private WeChatMpConfig weChatConfig;
-    @Autowired
     private WxMessageRouter wxMessageRouter;
+
+    public WeChatMpAutoConfiguration(WeChatMpConfig weChatConfig, WxMessageRouter wxMessageRouter) {
+        this.weChatConfig = weChatConfig;
+        this.wxMessageRouter = wxMessageRouter;
+    }
 
     @Bean
     //表示当classPath下存在HelloService.class文件时改配置文件类才有效
