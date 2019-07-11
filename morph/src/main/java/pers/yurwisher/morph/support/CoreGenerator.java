@@ -77,7 +77,7 @@ public class CoreGenerator implements Generator {
     }
 
     private void  generateMapper(CoreConfig coreConfig, CoreModel coreModel){
-        MapperModel mapperModel = new MapperModel(coreModel,coreConfig.getMapperSuperClass());
+        MapperModel mapperModel = new MapperModel(coreModel,coreConfig.getMapperSuperClass(),coreConfig);
         //mapper
         generate(mapperModel, mapperFolderPath(coreModel), mapperFileName(coreModel,Constant.DOT_JAVA), "/template/mapper.java.ftl");
         //mapper xml
@@ -85,7 +85,7 @@ public class CoreGenerator implements Generator {
     }
 
     private void generateService(CoreConfig coreConfig, CoreModel coreModel) {
-        ServiceModel serviceModel = new ServiceModel(coreModel, coreConfig.getServiceSuperClass(),coreConfig.getServiceImplSuperClass());
+        ServiceModel serviceModel = new ServiceModel(coreModel, coreConfig.getServiceSuperClass(),coreConfig.getServiceImplSuperClass(),coreConfig);
         //service接口
         generate(serviceModel, serviceFolderPath(coreModel, false), serviceFileName(coreModel, false), "/template/service.java.ftl");
         //service实现类
@@ -134,7 +134,7 @@ public class CoreGenerator implements Generator {
     }
 
     private void generateController(CoreConfig coreConfig, CoreModel coreModel) {
-        ControllerModel controllerModel = new ControllerModel(coreModel, coreConfig.getControllerSuperClass());
+        ControllerModel controllerModel = new ControllerModel(coreModel, coreConfig.getControllerSuperClass(),coreConfig);
         generate(controllerModel, controllerFolderPath(coreModel), controllerFileName(coreModel), "/template/controller.java.ftl");
     }
 

@@ -12,6 +12,8 @@ import pers.yurwisher.morph.common.Utils;
 public class MapperModel {
 
     private CoreModel coreModel;
+
+    private CoreConfig coreConfig;
     /**
      * 父类
      */
@@ -19,10 +21,11 @@ public class MapperModel {
 
     private String superMapperName;
 
-    public MapperModel(CoreModel coreModel, String superMapperClass) {
+    public MapperModel(CoreModel coreModel, String superMapperClass , CoreConfig coreConfig) {
         this.coreModel = coreModel;
         this.superMapperClass = superMapperClass;
         this.superMapperName = Utils.isEmpty(superMapperClass) ? null : superMapperClass.substring(superMapperClass.lastIndexOf(Constant.DOT) + 1);
+        this.coreConfig = coreConfig;
     }
 
     public CoreModel getCoreModel() {
@@ -47,5 +50,13 @@ public class MapperModel {
 
     public void setSuperMapperName(String superMapperName) {
         this.superMapperName = superMapperName;
+    }
+
+    public CoreConfig getCoreConfig() {
+        return coreConfig;
+    }
+
+    public void setCoreConfig(CoreConfig coreConfig) {
+        this.coreConfig = coreConfig;
     }
 }

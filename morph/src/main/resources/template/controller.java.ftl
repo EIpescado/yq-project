@@ -8,8 +8,12 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import pers.yurwisher.wisp.wrapper.R;
+<#if coreConfig.fo>
 import ${coreModel.basePackage}.pojo.fo.${coreModel.entityName}Fo;
+</#if>
+<#if coreConfig.qo>
 import ${coreModel.basePackage}.pojo.qo.${coreModel.entityName}Qo;
+</#if>
 import ${superControllerClass};
 import ${coreModel.basePackage}.service.I${coreModel.entityName}Service;
 
@@ -32,6 +36,7 @@ public class ${coreModel.entityName}Controller{
         this.${coreModel.entityName?uncap_first}Service = ${coreModel.entityName?uncap_first}Service;
     }
 
+    <#if coreConfig.fo>
     @PostMapping
     public R create(@RequestBody ${coreModel.entityName}Fo fo){
         ${coreModel.entityName?uncap_first}Service.create(fo);
@@ -43,6 +48,7 @@ public class ${coreModel.entityName}Controller{
         ${coreModel.entityName?uncap_first}Service.update(id,fo);
         return R.ok();
     }
+    </#if>
 
     @GetMapping("{id}")
     public R get(@PathVariable(name = "id")${coreModel.idType} id){
@@ -55,13 +61,18 @@ public class ${coreModel.entityName}Controller{
         return R.ok();
     }
 
+    <#if coreConfig.qo>
     @GetMapping
     public R list(@ModelAttribute ${coreModel.entityName}Qo qo){
         return R.ok(${coreModel.entityName?uncap_first}Service.list(qo));
     }
+    </#if>
 
+    <#if coreConfig.so>
     @GetMapping("/select")
     public R select(){
         return R.ok(${coreModel.entityName?uncap_first}Service.select());
     }
+    </#if>
+
 }

@@ -20,10 +20,13 @@ public class ControllerModel {
 
     private String superControllerName;
 
-    public ControllerModel(CoreModel coreModel, String superControllerClass) {
+    private CoreConfig coreConfig;
+
+    public ControllerModel(CoreModel coreModel, String superControllerClass,CoreConfig coreConfig) {
         this.coreModel = coreModel;
         this.superControllerClass = superControllerClass;
         this.superControllerName = Utils.isEmpty(superControllerClass) ? null : superControllerClass.substring(superControllerClass.lastIndexOf(Constant.DOT) + 1);
+        this.coreConfig = coreConfig;
     }
 
     public CoreModel getCoreModel() {
@@ -48,5 +51,13 @@ public class ControllerModel {
 
     public void setSuperControllerName(String superControllerName) {
         this.superControllerName = superControllerName;
+    }
+
+    public CoreConfig getCoreConfig() {
+        return coreConfig;
+    }
+
+    public void setCoreConfig(CoreConfig coreConfig) {
+        this.coreConfig = coreConfig;
     }
 }
