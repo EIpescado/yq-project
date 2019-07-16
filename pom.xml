@@ -44,7 +44,7 @@
 
         <!--第三方依赖-->
         <spring-boot.version>1.5.12.RELEASE</spring-boot.version>
-        <fastjson.version>1.2.56</fastjson.version>
+        <fastjson.version>1.2.58</fastjson.version>
         <httpclient.version>4.5.3</httpclient.version>
         <jdom.version>2.0.6</jdom.version>
         <jaxen.version>1.1.6</jaxen.version>

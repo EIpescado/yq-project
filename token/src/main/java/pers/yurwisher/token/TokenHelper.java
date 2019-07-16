@@ -31,17 +31,9 @@ public class TokenHelper {
      */
     private Long expireTime;
     /**
-     * token签发者
-     */
-    private String issuer ;
-    /**
      * 签名密钥
      */
     private SecretKey signingKey;
-    /**
-     * 接收者
-     */
-    private String audience;
     /**
      * header签名算法
      */
@@ -53,25 +45,19 @@ public class TokenHelper {
     private Class<? extends Token> customTokenClass;
 
     /**
-     * 默认过期时间 一天
+     * 默认过期时间 一小时
      */
-    private static final Long DEFAULT_EXPIRE_TIME = 24 * 60 * 60 * 1000L;
-    /**
-     * 默认接收者
-     */
-    private static final String DEFAULT_AUDIENCE = "user";
+    private static final Long DEFAULT_EXPIRE_TIME = 60 * 60 * 1000L;
 
-    public TokenHelper(String tokenSecret, Long tokenExpireTime, String issuer, SignatureAlgorithm signatureAlgorithm,String audience) {
+    public TokenHelper(String tokenSecret, Long tokenExpireTime, SignatureAlgorithm signatureAlgorithm) {
         this.secret = assertIsEmpty(tokenSecret);
         this.expireTime = tokenExpireTime != null ? tokenExpireTime : DEFAULT_EXPIRE_TIME;
-        this.issuer = assertIsEmpty(issuer);
         this.signatureAlgorithm = signatureAlgorithm == null ? SignatureAlgorithm.HS256 : signatureAlgorithm;
-        this.audience = audience == null ? DEFAULT_AUDIENCE : audience;
         this.signingKey = generalKey();
     }
 
-    public TokenHelper(String tokenSecret, Long tokenExpireTime, String issuer) {
-        this(tokenSecret,tokenExpireTime,issuer,null,null);
+    public TokenHelper(String tokenSecret, Long tokenExpireTime) {
+        this(tokenSecret,tokenExpireTime,null);
     }
 
     /**

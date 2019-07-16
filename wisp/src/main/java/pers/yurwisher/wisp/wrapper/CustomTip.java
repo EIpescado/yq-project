@@ -32,6 +32,14 @@ public class CustomTip implements Comparable, Serializable {
         this.msg = msg;
     }
 
+    public static CustomTip of(String code, String msg){
+        return new CustomTip(code,msg);
+    }
+
+    public static CustomTip of(int code, String msg){
+        return new CustomTip(code,msg);
+    }
+
     public CustomTip() {
     }
 

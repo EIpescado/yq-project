@@ -8,29 +8,43 @@ import pers.yurwisher.token.exception.TokenException;
  * @description token接口
  * @since V1.0.0
  */
-public interface ITokenService {
+public interface ITokenService<T extends Token> {
 
     /**
      * 生成token
-     * @param subject
-     * @param token
-     * @return
+     * @param token 对象
      */
-    String generateToken(String subject,Token token);
+    String generateToken(T token);
 
     /**
      * 解析token获取参数对象
-     * @param jwsToken token
+     * @param jwsToken token字符串
+     * @return token
+     * @exception TokenException 转化异常
      */
-    Token parseToken(String jwsToken) throws TokenException;
+    T parseToken(String jwsToken) throws TokenException;
 
+    /**
+     * 解析token获取参数对象
+     * @param jwsToken token字符串
+     * @param tokenClass 自定义token类
+     * @return token
+     * @exception  TokenException 转化异常
+     */
+    Token parseToken(String jwsToken,Class<? extends Token> tokenClass) throws TokenException;
 
     /**
      * 生成token
-     * @param subject
-     * @param token
+     * @param token token对象
      * @param expireTime 过期时间
-     * @return
+     * @return token字符串
      */
-    String generateToken(String subject, Token token,Long expireTime);
+    String generateToken(T token,Long expireTime);
+
+    /**
+     * 刷新token
+     * @param token token对象
+     * @return token字符串
+     */
+    String refreshToken(T token);
 }

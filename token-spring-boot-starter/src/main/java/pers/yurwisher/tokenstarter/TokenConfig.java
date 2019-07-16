@@ -20,17 +20,9 @@ public class TokenConfig {
      */
     private String secret;
     /**
-     * token过期时间,默认一天
+     * token过期时间,默认一小时
      */
-    private Long expireTime = 24 * 60 * 60 * 1000L;
-    /**
-     * token签发者
-     */
-    private String issuer ;
-    /**
-     * token接收者
-     */
-    private String audience = "user";
+    private Long expireTime = 60 * 60 * 1000L;
     /**
      * header签名算法,默认HS256
      */
