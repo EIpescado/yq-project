@@ -5,7 +5,6 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.springframework.data.redis.core.RedisTemplate;
 
 /**
  * @author yq
@@ -18,8 +17,8 @@ public class QCacheAspect {
 
     private QCacheSupport qCacheSupport;
 
-    public QCacheAspect(RedisTemplate<String, Object> redisTemplate) {
-        this.qCacheSupport = new QCacheSupport(redisTemplate);
+    public QCacheAspect(ICacheService cacheService) {
+        this.qCacheSupport = new QCacheSupport(cacheService);
     }
 
     @Around("@annotation(pers.yurwisher.cache.annotation.QCache)")

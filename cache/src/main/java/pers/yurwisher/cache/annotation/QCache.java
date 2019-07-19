@@ -1,6 +1,6 @@
 package pers.yurwisher.cache.annotation;
 
-import pers.yurwisher.cache.support.RedisType;
+import pers.yurwisher.cache.support.CacheType;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -45,7 +45,7 @@ public @interface QCache {
      * redis数据类型
      * @return RedisType
      */
-    RedisType type() default RedisType.HASH;
+    CacheType type() default CacheType.HASH;
 
     /**
      * 自定义 key生成器 (最末)

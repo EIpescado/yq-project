@@ -12,8 +12,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
+import pers.yurwisher.cache.support.ICacheService;
 import pers.yurwisher.cache.support.QCacheAspect;
 import pers.yurwisher.cache.support.QCacheSupport;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author yq
@@ -70,9 +73,52 @@ public class CacheAutoConfiguration {
     }
 
     @Bean
+    @ConditionalOnClass(value = {ICacheService.class})
+    @ConditionalOnMissingBean(value = ICacheService.class)
+    public ICacheService cacheService(RedisTemplate<String, Object> redisTemplate){
+        return new ICacheService() {
+            @Override
+            public void put(String key, Object value) {
+                redisTemplate.opsForValue().set(key,value);
+            }
+
+            @Override
+            public void put(String key, Object value, long times, TimeUnit unit) {
+                redisTemplate.opsForValue().set(key, value, times, unit);
+            }
+
+            @Override
+            public void put(String hash, String key, Object value) {
+                redisTemplate.opsForHash().put(hash,key,value);
+            }
+
+            @Override
+            public Object get(String key) {
+                return redisTemplate.opsForValue().get(key);
+            }
+
+            @Override
+            public Object get(String hash, String key) {
+                return redisTemplate.opsForHash().get(hash,key);
+            }
+
+            @Override
+            public void delete(String key) {
+                redisTemplate.delete(key);
+            }
+
+            @Override
+            public void delete(String hash, String key) {
+                redisTemplate.opsForHash().delete(hash,key);
+            }
+        };
+    }
+
+
+    @Bean
     @ConditionalOnClass(value = {QCacheSupport.class})
-    @ConditionalOnBean(name = "redisTemplateForQCache")
-    public QCacheAspect qCacheAspect(RedisTemplate<String, Object> redisTemplate){
-        return new QCacheAspect(redisTemplate);
+    @ConditionalOnBean(value = ICacheService.class)
+    public QCacheAspect qCacheAspect(ICacheService cacheService){
+        return new QCacheAspect(cacheService);
     }
 }

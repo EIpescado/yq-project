@@ -5,12 +5,12 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.redis.core.RedisTemplate;
 import pers.yurwisher.cache.annotation.QCache;
 import pers.yurwisher.cache.annotation.QCacheEvict;
 import pers.yurwisher.cache.exception.CacheException;
 
 import java.lang.reflect.Method;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author yq
@@ -22,11 +22,11 @@ public class QCacheSupport {
 
     private static final Logger logger = LoggerFactory.getLogger(QCacheSupport.class);
 
-    private RedisTemplate<String,Object> redisTemplate;
+    private ICacheService cacheService;
 
-    public QCacheSupport(RedisTemplate<String, Object> redisTemplate) {
+    public QCacheSupport(ICacheService cacheService) {
         logger.info("QCache 注解支持");
-        this.redisTemplate = redisTemplate;
+        this.cacheService = cacheService;
     }
 
     public Object supportQCache(ProceedingJoinPoint pjp) throws Throwable{
@@ -35,7 +35,7 @@ public class QCacheSupport {
         String methodName = pjp.getSignature().getName();
         Method objMethod = classTarget.getMethod(methodName, signature.getParameterTypes());
         QCache qCache = objMethod.getAnnotation(QCache.class);
-        RedisType redisType = qCache.type();
+        CacheType redisType = qCache.type();
         Object result = null;
         switch (redisType){
             case STRING:
@@ -54,7 +54,7 @@ public class QCacheSupport {
         MethodSignature signature = (MethodSignature) point.getSignature();
         Method objMethod = signature.getMethod();
         QCacheEvict qCache = objMethod.getAnnotation(QCacheEvict.class);
-        RedisType redisType = qCache.type();
+        CacheType redisType = qCache.type();
         switch (redisType){
             case STRING:
                 stringEvict(qCache,point,signature);
@@ -79,8 +79,46 @@ public class QCacheSupport {
         if(isEmpty(key)){
             throw new CacheException("key value is empty");
         }
-        IRedisService redisService =  getRedisService(pjp);
-        return redisService.getValue(hash,key,qCache.keyExpiresTime());
+        return handlePut(hash,key,qCache.keyExpiresTime(),pjp);
+    }
+
+    private Object handlePut(String hash,String key,long expiresTime,ProceedingJoinPoint pjp){
+        Object val;
+        if(isEmpty(hash)){
+            val = cacheService.get(key);
+        }else {
+            val = cacheService.get(hash,key);
+        }
+        if(val != null){
+            CacheObject cacheObject = (CacheObject) val;
+            //尚未过期
+            if(!cacheObject.expired()){
+                return cacheObject.getValue();
+            }else {
+                //已过期重新获取值 并存入redis
+                return put(hash,key,expiresTime,pjp);
+            }
+        }else {
+            //缓存中没有重新获取 并存入redis
+           return put(hash,key,expiresTime,pjp);
+        }
+    }
+
+    private Object put(String hash,String key,long expiresTime,ProceedingJoinPoint pjp){
+        Object val;
+        try {
+            val = pjp.proceed();
+            if(val != null){
+                if(isEmpty(hash)){
+                    cacheService.put(key,new CacheObject(val,expiresTime),expiresTime, TimeUnit.SECONDS);
+                }else {
+                    cacheService.put(hash,key,new CacheObject(val,expiresTime));
+                }
+            }
+            return val;
+        } catch (Throwable throwable) {
+            throw new CacheException("get originalData error",throwable);
+        }
     }
 
     /**
@@ -91,25 +129,7 @@ public class QCacheSupport {
         if(isEmpty(key)){
             throw new CacheException("key value is empty");
         }
-        IRedisService redisService =  getRedisService(pjp);
-        return redisService.getValue(key,qCache.keyExpiresTime());
-    }
-
-    /**
-     * 得到redis service
-     */
-    private IRedisService getRedisService(ProceedingJoinPoint pjp){
-        return new IRedisService() {
-            @Override
-            public Object originalData() throws Throwable {
-                return pjp.proceed();
-            }
-
-            @Override
-            public RedisTemplate<String, Object> redisTemplate() {
-                return redisTemplate;
-            }
-        };
+        return handlePut(null,key,qCache.keyExpiresTime(),pjp);
     }
 
     private boolean isEmpty(String x){
@@ -196,7 +216,7 @@ public class QCacheSupport {
         if(isEmpty(key)){
             throw new CacheException("key value is empty");
         }
-        redisTemplate.opsForHash().delete(hash,key);
+        cacheService.delete(hash,key);
     }
 
     /**
@@ -207,7 +227,7 @@ public class QCacheSupport {
         if(isEmpty(key)){
             throw new CacheException("key value is empty");
         }
-        redisTemplate.delete(key);
+        cacheService.delete(key);
     }
 
 }
