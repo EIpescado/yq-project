@@ -8,6 +8,7 @@ public class CoreModelBuilder {
     private String entityClass;
     private String description;
     private String basePackage;
+    private String module;
 
     public CoreModelBuilder setIdType(String idType) {
         this.idType = idType;
@@ -34,7 +35,12 @@ public class CoreModelBuilder {
         return this;
     }
 
+    public CoreModelBuilder setModule(String module) {
+        this.module = module;
+        return this;
+    }
+
     public CoreModel build() {
-        return new CoreModel(idType, author, entityClass, description, basePackage);
+        return new CoreModel(idType, author, entityClass, description, basePackage,module);
     }
 }

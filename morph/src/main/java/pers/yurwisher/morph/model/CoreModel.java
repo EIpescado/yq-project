@@ -34,7 +34,9 @@ public class CoreModel {
 
     private String basePackage;
 
-    public CoreModel(String idType, String author, String entityClass , String description, String basePackage) {
+    private String module;
+
+    public CoreModel(String idType, String author, String entityClass , String description, String basePackage,String module) {
         this.idType = idType;
         this.author = author;
         this.date = new Date();
@@ -42,6 +44,7 @@ public class CoreModel {
         this.entityName = entityClass.substring(entityClass.lastIndexOf(Constant.DOT) + 1);
         this.description = description;
         this.basePackage = basePackage;
+        this.module = module;
     }
 
     public String getIdType() {
@@ -100,4 +103,11 @@ public class CoreModel {
         this.basePackage = basePackage;
     }
 
+    public String getModule() {
+        return module;
+    }
+
+    public void setModule(String module) {
+        this.module = module;
+    }
 }

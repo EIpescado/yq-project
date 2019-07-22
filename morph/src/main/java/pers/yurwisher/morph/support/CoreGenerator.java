@@ -81,7 +81,7 @@ public class CoreGenerator implements Generator {
         //mapper
         generate(mapperModel, mapperFolderPath(coreModel), mapperFileName(coreModel,Constant.DOT_JAVA), "/template/mapper.java.ftl");
         //mapper xml
-        generate(mapperModel, mapperXmlFolderPath(coreConfig), mapperFileName(coreModel,Constant.DOT_XML), "/template/mapper.xml.ftl");
+        generate(mapperModel, mapperXmlFolderPath(coreModel,coreConfig), mapperFileName(coreModel,Constant.DOT_XML), "/template/mapper.xml.ftl");
     }
 
     private void generateService(CoreConfig coreConfig, CoreModel coreModel) {
@@ -95,16 +95,16 @@ public class CoreGenerator implements Generator {
     private String mapperFolderPath(CoreModel coreModel){
         StringBuilder sb = new StringBuilder(coreModel.getBasePackage());
         sb.append(Constant.DOT).append("mapper");
-        return generateOutPutFolderPath("src/main/java",sb.toString());
+        return generateOutPutFolderPath(coreModel.getModule(),false,sb.toString());
     }
 
 
-    private String mapperXmlFolderPath(CoreConfig coreConfig){
+    private String mapperXmlFolderPath(CoreModel coreModel,CoreConfig coreConfig){
         String mapperLocation = coreConfig.getMapperLocation();
         if(Utils.isEmpty(mapperLocation)){
             mapperLocation = "mapper";
         }
-        return generateOutPutFolderPath("src/main/resources",mapperLocation);
+        return generateOutPutFolderPath(coreModel.getModule(),true,mapperLocation);
     }
 
     private String serviceFolderPath(CoreModel coreModel, boolean impl) {
@@ -113,7 +113,7 @@ public class CoreGenerator implements Generator {
         if (impl) {
             sb.append(Constant.DOT).append("impl");
         }
-        return generateOutPutFolderPath("src/main/java",sb.toString());
+        return generateOutPutFolderPath(coreModel.getModule(),false,sb.toString());
     }
 
     private String mapperFileName(CoreModel coreModel,String suffix){
@@ -141,7 +141,7 @@ public class CoreGenerator implements Generator {
     private String controllerFolderPath(CoreModel coreModel){
         StringBuilder sb = new StringBuilder(coreModel.getBasePackage());
         sb.append(Constant.DOT).append("controller");
-        return generateOutPutFolderPath("src/main/java",sb.toString());
+        return generateOutPutFolderPath(coreModel.getModule(),false,sb.toString());
     }
 
     private String controllerFileName(CoreModel coreModel){
@@ -156,7 +156,7 @@ public class CoreGenerator implements Generator {
     private String getFolderPathByFlag(CoreModel coreModel, String flag) {
         StringBuilder sb = new StringBuilder(coreModel.getBasePackage());
         sb.append(Constant.DOT).append("pojo").append(Constant.DOT).append(flag.toLowerCase());
-        return generateOutPutFolderPath("src/main/java",sb.toString());
+        return generateOutPutFolderPath(coreModel.getModule(),false,sb.toString());
     }
 
     /**
@@ -198,18 +198,21 @@ public class CoreGenerator implements Generator {
 
     /**
      * 生成文件输出路径
-     * @param basePath    根路径
-     * @param packageName 包名
+     * @param module    模块名
+     * @param resource 是否为resource
      * @return 文件输出路径
      */
-    private String generateOutPutFolderPath(String basePath, String packageName){
+    private String generateOutPutFolderPath(String module, boolean resource, String packageName){
+        String basePath = resource ? "src/main/resources" : "src/main/java";
         String[] array = packageName.split("\\.");
         StringBuilder sb = new StringBuilder(basePath);
-        if (!basePath.endsWith(File.separator)) {
-            sb.append(File.separator);
-        }
+        sb.append(File.separator);
         for (int i = 0; i < array.length; i++) {
             sb.append(array[i]).append(File.separator);
+        }
+        //有模块插入模块
+        if(!Utils.isEmpty(module)){
+            sb.insert(0,module + File.separator);
         }
         return sb.toString();
     }
