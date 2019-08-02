@@ -33,6 +33,12 @@ public class R<T> implements Serializable {
         this.res = res;
     }
 
+    public R(String code, String message) {
+        this.code = code;
+        this.message = message;
+        this.res = null;
+    }
+
     /**判断返回是否成功*/
     public boolean succeed(){
         return code.equals(SUCCESS_CODE);
@@ -49,7 +55,7 @@ public class R<T> implements Serializable {
 
     /**返回失败*/
     public static R fail(String message){
-        return new R<>(FAILURE_CODE,message,null);
+        return new R<>(FAILURE_CODE,message);
     }
 
     /**返回失败*/
