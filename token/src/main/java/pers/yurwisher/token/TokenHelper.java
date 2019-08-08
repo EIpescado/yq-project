@@ -45,19 +45,30 @@ public class TokenHelper {
     private Class<? extends Token> customTokenClass;
 
     /**
-     * 默认过期时间 一小时
+     * 默认过期时间 两小时
      */
-    private static final Long DEFAULT_EXPIRE_TIME = 60 * 60 * 1000L;
+    private static final Long DEFAULT_EXPIRE_TIME = 2 * 60 * 60 * 1000L;
 
-    public TokenHelper(String tokenSecret, Long tokenExpireTime, SignatureAlgorithm signatureAlgorithm) {
+    /**
+     * 默认可以自动刷新token的时间 一小时,即只要token未过期且当前时间 - 签发时间 >= 1小时,即刷新token
+     */
+    private static final Long DEFAULT_REFRESH_TIME = 60 * 60 * 1000L;
+
+    /**
+     * token自动刷新时间
+     */
+    private Long refreshTime;
+
+    public TokenHelper(String tokenSecret, Long tokenExpireTime, Long refreshTime,SignatureAlgorithm signatureAlgorithm) {
         this.secret = assertIsEmpty(tokenSecret);
         this.expireTime = tokenExpireTime != null ? tokenExpireTime : DEFAULT_EXPIRE_TIME;
+        this.refreshTime = refreshTime != null ? refreshTime : DEFAULT_REFRESH_TIME;
         this.signatureAlgorithm = signatureAlgorithm == null ? SignatureAlgorithm.HS256 : signatureAlgorithm;
         this.signingKey = generalKey();
     }
 
-    public TokenHelper(String tokenSecret, Long tokenExpireTime) {
-        this(tokenSecret,tokenExpireTime,null);
+    public TokenHelper(String tokenSecret, Long tokenExpireTime,Long refreshTime) {
+        this(tokenSecret,tokenExpireTime,refreshTime,null);
     }
 
     /**

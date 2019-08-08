@@ -53,6 +53,14 @@ public class R<T> implements Serializable {
         return new R<>(SUCCESS_CODE,SUCCESS_MESSAGE,null);
     }
 
+    public static <T> R<T> ok(CustomTip tip,T res){
+       return new R<>(tip.getCode(),tip.getMsg(),res);
+    }
+
+    public static <T> R<T> ok(ICustomTipEnum tip,T res){
+        return new R<>(tip.getCode(),tip.getMsg(),res);
+    }
+
     /**返回失败*/
     public static R fail(String message){
         return new R<>(FAILURE_CODE,message);

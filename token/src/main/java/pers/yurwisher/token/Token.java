@@ -32,11 +32,6 @@ public class Token {
      */
     @JSONField(name = "crt")
     private Long dateCreated;
-    /**
-     * token可以自动刷新,直到此时间为止
-     */
-    @JSONField(name = "rfu")
-    private Long refreshUntil;
 
     /**
      * 转json对象
@@ -64,12 +59,4 @@ public class Token {
         }
     }
 
-    /**
-     * 是否可以刷新token
-     *
-     * @return boolean
-     */
-    public boolean canRefresh() {
-        return System.currentTimeMillis() <= this.refreshUntil;
-    }
 }

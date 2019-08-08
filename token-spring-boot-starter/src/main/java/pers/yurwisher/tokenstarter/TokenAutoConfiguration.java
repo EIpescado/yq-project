@@ -33,7 +33,7 @@ public class TokenAutoConfiguration {
     @ConditionalOnClass(value = TokenHelper.class)
     @ConditionalOnMissingBean(TokenHelper.class)
     public TokenHelper tokenHelper(){
-        TokenHelper tokenHelper =  new TokenHelper(tokenConfig.getSecret(), tokenConfig.getExpireTime(), tokenConfig.getSignatureAlgorithm());
+        TokenHelper tokenHelper =  new TokenHelper(tokenConfig.getSecret(), tokenConfig.getExpireTime(), tokenConfig.getRefreshTime(),tokenConfig.getSignatureAlgorithm());
         tokenHelper.setCustomTokenClass(tokenConfig.getCustomTokenClass());
         return tokenHelper;
     }

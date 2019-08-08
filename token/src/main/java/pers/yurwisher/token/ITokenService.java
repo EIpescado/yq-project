@@ -47,4 +47,11 @@ public interface ITokenService<T extends Token> {
      * @return token字符串
      */
     String refreshToken(T token);
+
+    /**
+     * 是否可以刷新token
+     * @param token  token
+     * @return boolean
+     */
+    boolean canRefresh(T token) ;
 }
