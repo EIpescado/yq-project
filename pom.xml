@@ -21,6 +21,7 @@
         <module>juggernaut</module>
         <module>wisp</module>
         <module>morph</module>
+        <module>earth-shaker</module>
     </modules>
 
     <properties>
@@ -41,6 +42,7 @@
         <juggernaut.version>0.0.1</juggernaut.version>
         <wisp.version>0.0.1</wisp.version>
         <morph.version>0.0.1</morph.version>
+        <earth-shaker.version>0.0.1</earth-shaker.version>
 
         <!--第三方依赖-->
         <spring-boot.version>1.5.12.RELEASE</spring-boot.version>
@@ -63,6 +65,7 @@
         <aspectj.version>1.8.13</aspectj.version>
         <codec.version>1.11</codec.version>
         <spring.version>4.3.15.RELEASE</spring.version>
+        <qiniu.version>7.2.23</qiniu.version>
     </properties>
 
     <build>
