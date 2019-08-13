@@ -137,7 +137,7 @@ public class WxMessageRouter {
      * @return boolean
      */
     public boolean isMsgDuplicated(WxMpXmlMessage wxMessage) {
-        StringBuilder messageId = new StringBuilder();
+        StringBuilder messageId = new StringBuilder(wxMessage.getMsgType());
         if (wxMessage.getMsgId() == null) {
             messageId.append(wxMessage.getCreateTime())
                     .append("-").append(wxMessage.getFromUser())
