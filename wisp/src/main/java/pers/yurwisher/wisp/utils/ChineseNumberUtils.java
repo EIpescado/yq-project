@@ -95,6 +95,7 @@ public class ChineseNumberUtils {
             //拆出来后的剩余文本
             String nowText = text;
             BigDecimal value = BigDecimal.ZERO;
+            BigDecimal textToBigDecimalValue ;
             for (int i = 0, length = CN_UNIT_ARRAY.length; i < length; i++) {
                 nowUnitIndex = nowText.lastIndexOf(CN_UNIT_ARRAY[i]);
                 if (nowUnitIndex != -1) {
@@ -105,7 +106,10 @@ public class ChineseNumberUtils {
                     textValue = null;
                 }
                 if (textValue != null) {
-                    value = value.add(textToBigDecimal(textValue));
+                    textToBigDecimalValue = textToBigDecimal(textValue);
+                    if(textToBigDecimalValue != null){
+                        value = value.add(textToBigDecimalValue);
+                    }
                 }
             }
             return value;
@@ -114,6 +118,20 @@ public class ChineseNumberUtils {
     }
 
     private static BigDecimal textToBigDecimal(String oneUnitText) {
+        //首字符
+        String prefix = String.valueOf(oneUnitText.charAt(0));
+        //是否为十
+        boolean prefixIsTen = "十".equals(prefix);
+        //首字符是否为单位 十单独处理..
+        boolean prefixIsUnit = !prefixIsTen && CN_UNIT_MAP.containsKey(prefix);
+        //只有一个字符且只为单位返回null
+        if(oneUnitText.length() == 1 && prefixIsUnit){
+            return null;
+        }
+        //首字符为单位补1
+        if (prefixIsUnit || prefixIsTen) {
+            oneUnitText = "一" + oneUnitText;
+        }
         BigDecimal value = BigDecimal.ZERO;
         //在单位之前的值
         BigDecimal beforeUnitValue = null;
@@ -175,52 +193,67 @@ public class ChineseNumberUtils {
 
     /**
      * 中文表达转数字,如吃饭一百 转为吃饭100
+     *
      * @param text 原始文本
      * @return 拆分后结果
      */
-    public static String chineseToNumber(String text){
+    public static String chineseToNumber(String text) {
         StringBuilder sb = new StringBuilder();
         text = replaceAllChineseSpecialExpress(text);
         //上一个字符串是否是值或者单位
-        boolean previousOneIsValueOrUnit =false ;
+        boolean previousOneIsValueOrUnit = false;
         //数值builder
         StringBuilder numberBuilder = new StringBuilder();
         //文本builder
         StringBuilder textBuilder = new StringBuilder();
         //拆分文本 比如 吃饭一百五好贵啊 ,拆分成 吃饭 ,一百五,好贵啊
+        BigDecimal temp ;
         for (int i = 0, length = text.length(); i < length; i++) {
             String iChar = String.valueOf(text.charAt(i));
-            if(i == 0){
+            if (i == 0) {
                 previousOneIsValueOrUnit = CN_NUMBER_MAP.containsKey(iChar) || CN_UNIT_MAP.containsKey(iChar);
             }
             //值 或者 单位
             if (CN_NUMBER_MAP.containsKey(iChar) || CN_UNIT_MAP.containsKey(iChar)) {
-                if(!previousOneIsValueOrUnit){
+                if (!previousOneIsValueOrUnit) {
                     sb.append(textBuilder.toString());
-                    textBuilder.delete(0,textBuilder.length());
+                    textBuilder.delete(0, textBuilder.length());
                 }
                 numberBuilder.append(iChar);
                 previousOneIsValueOrUnit = true;
             } else {
                 //既不是值也不是单位
-                if(previousOneIsValueOrUnit){
-                    sb.append(chinese2Number(numberBuilder.toString()));
-                    numberBuilder.delete(0,numberBuilder.length());
+                if (previousOneIsValueOrUnit) {
+                    temp = chinese2Number(numberBuilder.toString());
+                    if(temp != null){
+                        sb.append(temp);
+                    }else {
+                        sb.append(numberBuilder.toString());
+                    }
+                    numberBuilder.delete(0, numberBuilder.length());
                 }
                 textBuilder.append(iChar);
                 previousOneIsValueOrUnit = false;
             }
         }
-        if(textBuilder.length() > 0){
+        if (textBuilder.length() > 0) {
             sb.append(textBuilder.toString());
         }
-        if(numberBuilder.length() > 0){
-            sb.append(chinese2Number(numberBuilder.toString()));
+        if (numberBuilder.length() > 0) {
+            temp = chinese2Number(numberBuilder.toString());
+            if(temp != null){
+                sb.append(temp);
+            }else {
+                sb.append(numberBuilder.toString());
+            }
         }
         return sb.toString();
     }
 
     public static void main(String[] args) {
+        System.out.println(chineseToNumber("美元"));
+        System.out.println(chineseToNumber("十欧元"));
+        System.out.println(chineseToNumber("十一元"));
         System.out.println(chineseToNumber("六万亿"));
         System.out.println(chineseToNumber("六元五"));
         System.out.println(chineseToNumber("七千二"));
@@ -236,7 +269,7 @@ public class ChineseNumberUtils {
         System.out.println(chineseToNumber("八万六千七百三十二亿九千七百二十三万五千七百三十二元六角七分"));
         System.out.println(chineseToNumber("六千七百三十二亿九千七百二十三万五千七百三十二元六角七分"));
         System.out.println(chineseToNumber("吃饭原价一百五打完折一百"));
-        System.out.println(chineseToNumber("吃饭一百五好贵啊"));
+        System.out.println(chineseToNumber("吃饭百五好贵啊"));
         System.out.println(chineseToNumber("一百万人吃饭花了两千四百万,你们也是厉害"));
         System.out.println(chineseToNumber("一百万人两千四百万的花费打完折三千"));
     }
