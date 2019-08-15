@@ -14,6 +14,8 @@ public interface Constant {
 
     String DOT = ".";
 
+    String HYPHEN = "-";
+
     String VO ="Vo";
     String QO ="Qo";
     String FO ="Fo";

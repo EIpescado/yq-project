@@ -1,6 +1,7 @@
 package pers.yurwisher.morph.model;
 
 import pers.yurwisher.morph.common.Constant;
+import pers.yurwisher.morph.common.Utils;
 
 import java.util.Date;
 
@@ -43,8 +44,10 @@ public class CoreModel {
         this.entityClass = entityClass;
         this.entityName = entityClass.substring(entityClass.lastIndexOf(Constant.DOT) + 1);
         this.description = description;
-        this.basePackage = basePackage;
         this.module = module;
+        //模块名和包名不一致的情况
+        String moduleAlias = !Utils.isEmpty(module) ? module.substring(module.lastIndexOf(Constant.HYPHEN) + 1) : module;
+        this.basePackage = basePackage + Constant.DOT + moduleAlias;
     }
 
     public String getIdType() {

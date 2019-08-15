@@ -50,10 +50,12 @@ public class ${coreModel.entityName}Controller{
     }
     </#if>
 
+    <#if coreConfig.vo>
     @GetMapping("{id}")
     public R get(@PathVariable(name = "id")${coreModel.idType} id){
         return R.ok(${coreModel.entityName?uncap_first}Service.get(id));
     }
+    </#if>
 
     @PostMapping("/delete/{id}")
     public R delete(@PathVariable(name = "id")${coreModel.idType} id){
