@@ -99,7 +99,7 @@ public class DefaultWorkGroup<T> implements IWorkGroup<T> {
         workers = new ArrayList<>(numberOfWorkers);
         //站好队
         for (int i = 0; i < numberOfWorkers; i++) {
-            workers.add(new Worker<>(groupPrefix() + i, this, getMaxWorkLoad()));
+            workers.add(new Worker<>(groupPrefix() + i, this));
         }
     }
 

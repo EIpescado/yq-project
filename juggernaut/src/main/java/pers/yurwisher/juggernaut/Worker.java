@@ -38,10 +38,10 @@ public class Worker<T> {
 
     private ExecutorService executorService;
 
-    public Worker(String workId, IWorkGroup<T> workGroup, Integer maxWorkLoad) {
+    public Worker(String workId, IWorkGroup<T> workGroup) {
         this.workId = workId;
         this.workGroup = workGroup;
-        this.maxWorkLoad = maxWorkLoad;
+        this.maxWorkLoad = workGroup.getMaxWorkLoad();
         this.workQueue = new LinkedBlockingQueue<>(maxWorkLoad);
         this.currentWorkTaskNumber = new LongAdder();
         execute();
