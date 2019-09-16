@@ -8,6 +8,7 @@ import pers.yurwisher.juggernaut.Worker;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.atomic.LongAdder;
 
 /**
  * @author yq
@@ -54,59 +55,64 @@ public class DefaultWorkGroup<T> implements IWorkGroup<T> {
      */
     private IMonitor<T> monitor;
 
-    private static final String DEFAULT_GROUP_PREFIX =  "default-group-";
+    /**
+     * 工作组承接的总工作量
+     */
+    private LongAdder totalWork;
 
-    public DefaultWorkGroup(int numberOfWorkers, int maxWorkLoad, String groupPrefix, int repairNumber , IWork<T> work , IMonitor<T> monitor) {
+    private static final String DEFAULT_GROUP_PREFIX = "default-group-";
+    private static final int DEFAULT_MAX_WORKLOAD = 1024;
+
+    public DefaultWorkGroup(int numberOfWorkers, int maxWorkLoad, String groupPrefix, int repairNumber) {
         this.groupPrefix = groupPrefix;
         this.numberOfWorkers = numberOfWorkers;
         this.maxWorkLoad = maxWorkLoad;
-        this.work = work;
         this.repairNumber = repairNumber;
-        this.monitor = monitor;
-        init();
+        this.totalWork = new LongAdder();
     }
 
-    public DefaultWorkGroup(int numberOfWorkers, int maxWorkLoad, int repairNumber, IWork<T> work, IMonitor<T> monitor) {
-        this(numberOfWorkers,maxWorkLoad,DEFAULT_GROUP_PREFIX,repairNumber,work,monitor);
+    public DefaultWorkGroup(int numberOfWorkers) {
+        this(numberOfWorkers, DEFAULT_MAX_WORKLOAD, DEFAULT_GROUP_PREFIX, 0);
     }
 
-    public DefaultWorkGroup(int numberOfWorkers, int maxWorkLoad, int repairNumber, IWork<T> work) {
-        this(numberOfWorkers,maxWorkLoad,DEFAULT_GROUP_PREFIX,repairNumber,work,null);
+    public DefaultWorkGroup(int numberOfWorkers, String groupPrefix, int repairNumber) {
+        this(numberOfWorkers, DEFAULT_MAX_WORKLOAD, groupPrefix, repairNumber);
     }
 
-    public DefaultWorkGroup(int numberOfWorkers, int maxWorkLoad,String groupPrefix, int repairNumber, IWork<T> work) {
-        this(numberOfWorkers,maxWorkLoad,groupPrefix,repairNumber,work,null);
+    public DefaultWorkGroup(int numberOfWorkers, int maxWorkLoad, int repairNumber) {
+        this(numberOfWorkers, maxWorkLoad, DEFAULT_GROUP_PREFIX, repairNumber);
     }
 
-    public DefaultWorkGroup(int numberOfWorkers, int maxWorkLoad, IWork<T> work) {
-        this(numberOfWorkers,maxWorkLoad,DEFAULT_GROUP_PREFIX,0,work,null);
+    public DefaultWorkGroup(int numberOfWorkers, int maxWorkLoad) {
+        this(numberOfWorkers, maxWorkLoad, DEFAULT_GROUP_PREFIX, 0);
     }
 
-    public DefaultWorkGroup(int numberOfWorkers, int maxWorkLoad, IWork<T> work, IMonitor<T> monitor) {
-        this(numberOfWorkers,maxWorkLoad,DEFAULT_GROUP_PREFIX,0,work,monitor);
+    public DefaultWorkGroup(int numberOfWorkers, int maxWorkLoad, String groupPrefix) {
+        this(numberOfWorkers, maxWorkLoad, groupPrefix, 0);
     }
 
-    public DefaultWorkGroup(int numberOfWorkers, int maxWorkLoad,String groupPrefix, IWork<T> work, IMonitor<T> monitor) {
-        this(numberOfWorkers,maxWorkLoad,groupPrefix,0,work,monitor);
-    }
-
-    /**
-     * 招募员工
-     */
-    private void init() {
-        logger.info("已有员工:{} 人", numberOfWorkers);
+    @Override
+    public void reGroup() {
+        //先解散员工
+        dismiss();
+        logger.info("招募员工:{} 人", numberOfWorkers);
         workers = new ArrayList<>(numberOfWorkers);
         //站好队
         for (int i = 0; i < numberOfWorkers; i++) {
-            workers.add(new Worker<>(groupPrefix() + i , this, getMaxWorkLoad()));
+            workers.add(new Worker<>(groupPrefix() + i, this, getMaxWorkLoad()));
         }
+    }
+
+    @Override
+    public boolean noWorker() {
+        return (workers != null ? workers.size() : 0) == 0;
     }
 
     /**
      * 计算得出工作分配给哪个员工,默认随机分配
      *
      * @param workTask 工作内容
-     * @param workers 工作组员工
+     * @param workers  工作组员工
      * @return 接受此任务的员工
      */
     @Override
@@ -116,19 +122,33 @@ public class DefaultWorkGroup<T> implements IWorkGroup<T> {
 
     /**
      * 任务接收,并分派给具体工人
+     *
      * @param taskContent 具体工作内容
      * @return 是否成功
      */
     @Override
-    public final boolean accept(T taskContent){
+    public final boolean accept(T taskContent) {
         WorkTask<T> workTask = new WorkTask<>(taskContent);
-        Worker<T> worker = allot(workTask,getWorkers());
+        return accept(workTask);
+    }
+
+    @Override
+    public boolean accept(WorkTask<T> workTask) {
+        //总工作量 + 1
+        totalWork.increment();
+        logger.info("工作组:{} 当前总工作量:{}", groupPrefix, totalWork.sum());
+        Worker<T> worker = allot(workTask, getWorkers());
         return worker.accept(workTask);
     }
 
     @Override
     public IWork<T> work() {
         return work;
+    }
+
+    @Override
+    public void setWork(IWork<T> iWork) {
+        this.work = iWork;
     }
 
     @Override
@@ -139,6 +159,11 @@ public class DefaultWorkGroup<T> implements IWorkGroup<T> {
     @Override
     public IMonitor<T> monitor() {
         return monitor;
+    }
+
+    @Override
+    public void setMonitor(IMonitor<T> monitor) {
+        this.monitor = monitor;
     }
 
     @Override
@@ -159,5 +184,20 @@ public class DefaultWorkGroup<T> implements IWorkGroup<T> {
     @Override
     public List<Worker<T>> getWorkers() {
         return workers;
+    }
+
+    private void dismiss() {
+        if (workers != null && workers.size() > 0) {
+            logger.info("解散工作组:{} 人", workers.size());
+            //站好队
+            for (int i = 0; i < workers.size(); i++) {
+                workers.get(i).dismiss();
+            }
+        }
+    }
+
+    @Override
+    public LongAdder totalWork() {
+        return totalWork;
     }
 }

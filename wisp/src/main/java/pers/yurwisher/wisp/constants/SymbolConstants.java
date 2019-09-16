@@ -28,4 +28,6 @@ public interface SymbolConstants {
     String DOT = ".";
     /**星*/
     String ASTERISK = "*";
+    /**反斜杠*/
+    String BACKSLASH = "\\";
 }

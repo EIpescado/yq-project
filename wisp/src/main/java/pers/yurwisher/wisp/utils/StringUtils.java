@@ -1,7 +1,5 @@
 package pers.yurwisher.wisp.utils;
 
-import java.sql.SQLOutput;
-import java.util.Random;
 import java.util.StringTokenizer;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.regex.Matcher;
@@ -53,6 +51,10 @@ public class StringUtils {
     private static final Pattern PURE_NUMBER_REGEX_PATTERN = Pattern.compile(PURE_NUMBER_REGEX);
 
     private static final String VERIFICATION_CODE_CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+
+    private static final String EMPTY_JSON = "{}";
+    private static final char BACKSLASH = '\\';
+    private static final char DELIM_START = '{';
 
     private StringUtils() {
     }
@@ -283,45 +285,6 @@ public class StringUtils {
     }
 
     /**
-     * 格式化字符串
-     *
-     * @param template 模版字符 占位使用%s
-     * @param args     参数
-     */
-    public static String format(String template, Object... args) {
-        template = String.valueOf(template);
-        StringBuilder builder = new StringBuilder(template.length() + 16 * args.length);
-        int templateStart = 0;
-
-        int i;
-        int placeholderStart;
-        for (i = 0; i < args.length; templateStart = placeholderStart + 2) {
-            placeholderStart = template.indexOf("%s", templateStart);
-            if (placeholderStart == -1) {
-                break;
-            }
-
-            builder.append(template.substring(templateStart, placeholderStart));
-            builder.append(args[i++]);
-        }
-
-        builder.append(template.substring(templateStart));
-        if (i < args.length) {
-            builder.append(" [");
-            builder.append(args[i++]);
-
-            while (i < args.length) {
-                builder.append(", ");
-                builder.append(args[i++]);
-            }
-
-            builder.append(']');
-        }
-
-        return builder.toString();
-    }
-
-    /**
      * 下划线格式字符串转换为驼峰格式字符串
      *
      * @param param
@@ -423,4 +386,71 @@ public class StringUtils {
         }
         return sb.toString();
     }
+
+    /**
+     * 格式化字符串<br>
+     * 此方法只是简单将占位符 {} 按照顺序替换为参数<br>
+     * 如果想输出 {} 使用 \\转义 { 即可，如果想输出 {} 之前的 \ 使用双转义符 \\\\ 即可<br>
+     * 例：<br>
+     * 通常使用：format("this is {} for {}", "a", "b") =》 this is a for b<br>
+     * 转义{}： format("this is \\{} for {}", "a", "b") =》 this is \{} for a<br>
+     * 转义\： format("this is \\\\{} for {}", "a", "b") =》 this is \a for b<br>
+     *
+     * @param strPattern 字符串模板
+     * @param argArray   参数列表
+     * @return 结果
+     */
+    public static String format2(final String strPattern, final Object... argArray) {
+        if (isEmpty(strPattern) || argArray == null || !(argArray.length > 0)) {
+            return strPattern;
+        }
+        final int strPatternLength = strPattern.length();
+
+        // 初始化定义好的长度以获得更好的性能
+        StringBuilder sbuf = new StringBuilder(strPatternLength + 50);
+        // 记录已经处理到的位置
+        int handledPosition = 0;
+        // 占位符所在位置
+        int delimIndex;
+        for (int argIndex = 0; argIndex < argArray.length; argIndex++) {
+            delimIndex = strPattern.indexOf(EMPTY_JSON, handledPosition);
+            // 剩余部分无占位符
+            if (delimIndex == -1) {
+                // 不带占位符的模板直接返回
+                if (handledPosition == 0) {
+                    return strPattern;
+                }
+                // 字符串模板剩余部分不再包含占位符，加入剩余部分后返回结果
+                sbuf.append(strPattern, handledPosition, strPatternLength);
+                return sbuf.toString();
+            }
+            // 转义符
+            if (delimIndex > 0 && strPattern.charAt(delimIndex - 1) == BACKSLASH) {
+                // 双转义符
+                if (delimIndex > 1 && strPattern.charAt(delimIndex - 2) == BACKSLASH) {
+                    // 转义符之前还有一个转义符，占位符依旧有效
+                    sbuf.append(strPattern, handledPosition, delimIndex - 1);
+                    sbuf.append(argArray[argIndex]);
+                    handledPosition = delimIndex + 2;
+                } else {
+                    // 占位符被转义
+                    argIndex--;
+                    sbuf.append(strPattern, handledPosition, delimIndex - 1);
+                    sbuf.append(DELIM_START);
+                    handledPosition = delimIndex + 1;
+                }
+            } else {// 正常占位符
+                sbuf.append(strPattern, handledPosition, delimIndex);
+                sbuf.append(argArray[argIndex]);
+                handledPosition = delimIndex + 2;
+            }
+        }
+
+        // append the characters following the last {} pair.
+        // 加入最后一个占位符后所有的字符
+        sbuf.append(strPattern, handledPosition, strPattern.length());
+
+        return sbuf.toString();
+    }
+
 }

@@ -9,6 +9,8 @@ import org.slf4j.LoggerFactory;
 import pers.yurwisher.grabber.HttpClientHelper;
 import pers.yurwisher.grabber.Utils;
 
+import java.util.Collections;
+
 /**
  * @author yq
  * @date 2018/12/11 15:08
@@ -24,11 +26,6 @@ public class Kuaidi100Grabber {
     /**根据单号查询快递类型地址*/
     private static final String QUERY_TYPE_URL = "http://www.kuaidi100.com/autonumber/autoComNum";
 
-    private HttpClientHelper httpClientHelper;
-
-    public Kuaidi100Grabber(HttpClientHelper httpClientHelper) {
-        this.httpClientHelper = httpClientHelper;
-    }
 
     /**
      * 构建请求地址
@@ -46,7 +43,7 @@ public class Kuaidi100Grabber {
      * @return 快递公司获取编码
      */
     public String obtainExpressType(String expressNo){
-        String returnStr = httpClientHelper.postForm(QUERY_TYPE_URL,new BasicNameValuePair("text",expressNo));
+        String returnStr = HttpClientHelper.getInstance().postForm(QUERY_TYPE_URL, Collections.singletonList(new BasicNameValuePair("text",expressNo)));
         JSONObject data = JSON.parseObject(returnStr);
         JSONArray array = data.getJSONArray("auto");
         String type = null ;
@@ -67,7 +64,7 @@ public class Kuaidi100Grabber {
      * @return 快递信息
      */
     public KuaiDi100Info queryExpressInfo(String wayBillNo, String expressCompanyNameCode){
-        String result = httpClientHelper.sendGet(buildUrl(wayBillNo,expressCompanyNameCode));
+        String result = HttpClientHelper.getInstance().sendGet(buildUrl(wayBillNo,expressCompanyNameCode));
         if(!Utils.isNotEmpty(result)){
             return null;
         }
@@ -86,6 +83,10 @@ public class Kuaidi100Grabber {
             return null;
         }
         return queryExpressInfo(wayBillNo,type);
+    }
+
+    public static void main(String[] args) {
+
     }
 
 }

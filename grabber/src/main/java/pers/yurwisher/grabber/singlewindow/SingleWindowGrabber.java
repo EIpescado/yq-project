@@ -3,10 +3,6 @@ package pers.yurwisher.grabber.singlewindow;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.http.HttpEntity;
-import org.apache.http.HttpStatus;
-import org.apache.http.StatusLine;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
 import org.apache.http.message.BasicHeader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,16 +38,9 @@ public class SingleWindowGrabber {
      * 报关单查询地址
      */
     private static final String QUERY_PATH = "http://sz.singlewindow.cn/dyck/swProxy/decserver/sw/dec/merge/cusQuery?";
-
     private static final String QUERY_ACCEPT = "application/json, text/javascript, */*; q=0.01";
-
     private static final String PDF_HEADER = "application/pdf;charset=UTF-8";
-
-    private HttpClientHelper httpClientHelper;
-
-    public SingleWindowGrabber(HttpClientHelper httpClientHelper) {
-        this.httpClientHelper = httpClientHelper;
-    }
+    private static final String LOGIN_HTML_START = "<!DOCTYPE html>";
 
     /***
      * 查询报关单
@@ -59,86 +48,67 @@ public class SingleWindowGrabber {
      * @param cookie 查询参数 单一窗口校验需要,可能过期
      * @return 列表
      */
-    public SingleWindowsDeclarationResult query(SingleWindowQueryParams singleWindowQueryParams,String cookie) {
-        String result = httpClientHelper.sendGet(QUERY_PATH + singleWindowQueryParams.build(), createHeadersForQuery(cookie));
+    public SingleWindowsDeclarationResult query(SingleWindowQueryParams singleWindowQueryParams, String cookie) {
+        String result = HttpClientHelper.getInstance().sendGet(QUERY_PATH + singleWindowQueryParams.build(), createHeadersForQuery(cookie));
         if (Utils.isNotEmpty(result)) {
-            if(result.contains("<!DOCTYPE html>")){
+            if (result.contains(LOGIN_HTML_START)) {
                 throw new GrabException("cookie have expired,Please reset");
             }
             JSONObject json = JSON.parseObject(result);
             return json.toJavaObject(SingleWindowsDeclarationResult.class);
-        }else {
+        } else {
             throw new GrabException("single window interface response exception,Try again later");
         }
     }
 
-    public void downloadPdf(String no, String cookie, OutputStream outputStream){
-        downloadPdf(no, cookie, () -> outputStream );
+    public void downloadPdf(String no, String cookie, OutputStream outputStream) {
+        downloadPdf(no, cookie, () -> outputStream);
     }
 
     /**
      * 下载pdf
-     * @param no   单一窗口统一编号
-     * @param dicPath pdf保存文件夹路径
+     *
+     * @param no       单一窗口统一编号
+     * @param dicPath  pdf保存文件夹路径
      * @param fileName 文件名称
-     * @param cookie 单一窗口校验需要,可能过期
+     * @param cookie   单一窗口校验需要,可能过期
      */
-    public void downloadPdf(String no, String dicPath, String fileName ,String cookie) {
+    public void downloadPdf(String no, String dicPath, String fileName, String cookie) {
         downloadPdf(no, cookie, () -> {
             File file = new File(dicPath);
-            if(!file.exists()){
-                file.mkdir();
-            }
-            return new FileOutputStream(dicPath + "/" + fileName);
-        } );
+            Utils.mkDir(file);
+            return new FileOutputStream(dicPath + File.separator + fileName);
+        });
     }
 
-    private void downloadPdf(String no, String cookie,OutputStreamCreater outputStreamCreater){
+    private void downloadPdf(String no, String cookie, OutputStreamCreater outputStreamCreater) {
         String url = String.format(PDF_URL, no);
-        CloseableHttpResponse response;
-        HttpEntity entity;
-        // 构建请求地址 创建httpGet.
-        HttpGet httpget = null;
-        OutputStream outputStream = null;
-        try {
-            httpget = new HttpGet(url);
-            //设置请求参数
-            httpget.setHeaders(createHeaders(cookie));
-            // 执行get请求.
-            response = httpClientHelper.getDefaultClient().execute(httpget);
-            final StatusLine statusLine = response.getStatusLine();
-            //响应码
-            int responseCode = statusLine.getStatusCode();
+        HttpClientHelper.getInstance().downloadFile(url, response -> {
             // 获取响应实体
-            entity = response.getEntity();
-            //响应成功
-            if (HttpStatus.SC_OK == responseCode) {
-                //header为pdf 表示可以直接下载
-                if(PDF_HEADER.equals(entity.getContentType().getValue())){
+            HttpEntity entity = response.getEntity();
+            //header为pdf 表示可以直接下载
+            if (PDF_HEADER.equals(entity.getContentType().getValue())) {
+                OutputStream outputStream = null;
+                try {
                     outputStream = outputStreamCreater.create();
                     entity.writeTo(outputStream);
-                }else {
-                    throw new GrabException("cookie have expired,Please reset");
-                }
-            }else {
-                throw new GrabException(no + " download fail");
-            }
-        } catch (IOException e) {
-            logger.error("{} download error", no,e);
-            throw new GrabException(no + " download fail");
-        } finally {
-            if (httpget != null) {
-                //释放连接
-                httpget.releaseConnection();
-            }
-            if (outputStream != null) {
-                try {
-                    outputStream.close();
                 } catch (IOException e) {
-                    logger.info("close outputStream fail");
+                    logger.error("输出流写出异常", e);
+                    throw new GrabException("entity write to outputStream error");
+                } finally {
+                    if (outputStream != null) {
+                        try {
+                            outputStream.close();
+                        } catch (IOException e) {
+                            logger.error("关闭输出流异常", e);
+                        }
+                    }
                 }
+            } else {
+                throw new GrabException("cookie have expired,Please reset");
             }
-        }
+            return null;
+        }, createHeaders(cookie));
     }
 
     /**

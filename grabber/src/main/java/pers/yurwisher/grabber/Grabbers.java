@@ -25,10 +25,9 @@ public class Grabbers {
     static {
         customsGrabber = new CustomsGrabber();
         exchangeRateGrabber = new ExchangeRateGrabber(JDomHelper.getDefaultInstance());
-        HttpClientHelper httpClientHelper = new HttpClientHelper();
-        kuaidi100Grabber = new Kuaidi100Grabber(httpClientHelper);
-        singleWindowGrabber = new SingleWindowGrabber(httpClientHelper);
-        boxOfficeGrabber = new BoxOfficeGrabber(httpClientHelper);
+        kuaidi100Grabber = new Kuaidi100Grabber();
+        singleWindowGrabber = new SingleWindowGrabber();
+        boxOfficeGrabber = new BoxOfficeGrabber();
     }
 
     public static CustomsGrabber getCustomsGrabber() {

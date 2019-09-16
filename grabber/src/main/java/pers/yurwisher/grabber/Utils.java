@@ -1,10 +1,12 @@
 package pers.yurwisher.grabber;
 
+import java.io.File;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.Collection;
+import java.util.Map;
 
 /**
  * @author yq
@@ -67,5 +69,22 @@ public class Utils {
 
     public static String null2EmptyWithTrimNew(Object x){
         return x != null && isNotEmpty(x.toString()) ? x.toString() : "";
+    }
+
+    public static boolean isEmpty(Map map) {
+        return map == null || map.size() == 0 ;
+    }
+
+    public static boolean isNotEmpty(Map map) {
+        return map != null && map.size() > 0;
+    }
+
+    public static void mkDir(File file) {
+        if (file.getParentFile().exists()) {
+            file.mkdir();
+        } else {
+            mkDir(file.getParentFile());
+            file.mkdir();
+        }
     }
 }

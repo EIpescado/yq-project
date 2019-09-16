@@ -25,14 +25,8 @@ public class BoxOfficeGrabber {
 
     private static final DateTimeFormatter YYYYMMDD_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMdd");
 
-    private HttpClientHelper httpClientHelper;
-
-    public BoxOfficeGrabber(HttpClientHelper httpClientHelper) {
-        this.httpClientHelper = httpClientHelper;
-    }
-
     public BoxOffice query(LocalDateTime dateTime) {
-        String x = httpClientHelper.sendGet(String.format(URL, dateTime.format(YYYYMMDD_FORMATTER)));
+        String x = HttpClientHelper.getInstance().sendGet(String.format(URL, dateTime.format(YYYYMMDD_FORMATTER)));
         JSONObject json = JSON.parseObject(x);
         Boolean success = json.getBoolean("success");
         if (success != null && success) {
@@ -41,6 +35,12 @@ public class BoxOfficeGrabber {
             logger.info("maoyan response: {}",x);
             throw new GrabException("grab box office from http://piaofang.maoyan.com/dashboard error,try it later");
         }
+    }
+
+    public static void main(String[] args) {
+        BoxOfficeGrabber g = new BoxOfficeGrabber();
+        BoxOffice today = g.query(LocalDateTime.now());
+        System.out.println(today.getTotalBox());
     }
 
 }

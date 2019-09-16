@@ -9,7 +9,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.LongAdder;
 
 /**
  * @author yq
@@ -30,8 +30,8 @@ public class Worker<T> {
     /**单个员工最大的工作量*/
     private int maxWorkLoad;
 
-    /**员工当前工作量*/
-    private AtomicInteger currentWorkTaskNumber;
+    /**员工当前工作量  LongAdder比AtomicLong性能更好(减少乐观锁的重试次数)*/
+    private LongAdder currentWorkTaskNumber;
 
     /**员工工作队列*/
     private LinkedBlockingQueue<WorkTask<T>> workQueue;
@@ -43,7 +43,7 @@ public class Worker<T> {
         this.workGroup = workGroup;
         this.maxWorkLoad = maxWorkLoad;
         this.workQueue = new LinkedBlockingQueue<>(maxWorkLoad);
-        this.currentWorkTaskNumber = new AtomicInteger(0);
+        this.currentWorkTaskNumber = new LongAdder();
         execute();
     }
 
@@ -55,7 +55,7 @@ public class Worker<T> {
     public boolean accept(WorkTask<T> task){
         boolean f = workQueue.offer(task);
         //工作量+1
-        currentWorkTaskNumber.incrementAndGet();
+        currentWorkTaskNumber.increment();
         return f;
     }
 
@@ -69,27 +69,29 @@ public class Worker<T> {
                 } catch (InterruptedException e) {
                     logger.error("线程异常", e);
                 }
-                if (task != null) {
-                    try {
-                        //执行次数 +1
-                        task.setInvokeCount(task.getInvokeCount() + 1);
-                        workGroup.work().run(task);
-                    } catch (Exception e) {
-                        logger.error("员工工作异常",e);
-                        //达到返修次数上限 退出重试
-                        if(task.getInvokeCount() >= workGroup.repairNumber() + 1){
-                            //异常回调
-                            if(workGroup.monitor() != null){
-                                workGroup.monitor().handle(task,e);
-                            }
-                        }else {
-                            //异常 丢回去接着处理
-                            accept(task);
+                try {
+                    //执行次数 +1
+                    task.setInvokeCount(task.getInvokeCount() + 1);
+                    workGroup.work().run(task);
+                } catch (Exception e) {
+                    logger.error("员工工作异常",e);
+                    //达到返修次数上限 退出重试
+                    if(task.getInvokeCount() >= workGroup.repairNumber() + 1){
+                        //异常回调
+                        if(workGroup.monitor() != null){
+                            workGroup.monitor().handle(task,e);
                         }
+                    }else {
+                        //异常 丢回去接着处理
+                        workGroup.accept(task);
                     }
+                } finally {
+                    //总工作量-1
+                    workGroup.totalWork().decrement();
+                    //当前工人剩余工作量-1
+                    currentWorkTaskNumber.decrement();
+                    logger.info("{} 剩余工作量:{},工作组剩余总工作量:{}",workId,currentWorkTaskNumber.sum(),workGroup.totalWork().sum());
                 }
-                //工作量-1
-                currentWorkTaskNumber.decrementAndGet();
             }
         });
     }
@@ -117,7 +119,7 @@ public class Worker<T> {
     /**
      * 员工离职
      */
-    public void dimission(){
+    public void dismiss(){
         workQueue.clear();
         executorService.shutdown();
     }

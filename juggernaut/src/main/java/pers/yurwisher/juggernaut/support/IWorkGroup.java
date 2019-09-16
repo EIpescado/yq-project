@@ -4,6 +4,7 @@ import pers.yurwisher.juggernaut.WorkTask;
 import pers.yurwisher.juggernaut.Worker;
 
 import java.util.List;
+import java.util.concurrent.atomic.LongAdder;
 
 /**
  * @author yq
@@ -54,10 +55,23 @@ public interface IWorkGroup<T> {
     boolean accept(T taskContent);
 
     /**
+     * 任务重新接收 用于异常情况 重试
+     * @param workTask 工作内容
+     * @return 是否成功
+     */
+    boolean accept(WorkTask<T> workTask);
+
+    /**
      * 此工作组的工作职责,即进行何种操作
      * @return 具体工作方式
      */
     IWork<T> work();
+
+    /**
+     * 制定工作
+     * @param iWork 工作
+     */
+    void setWork(IWork<T> iWork);
 
     /**
      * 返修次数
@@ -70,4 +84,26 @@ public interface IWorkGroup<T> {
      * @return 异常回调
      */
     IMonitor<T> monitor();
+
+    /**
+     * 制定工作异常回调
+     * @return 异常回调
+     */
+    void setMonitor(IMonitor<T> monitor);
+
+    /**
+     * 重组工作组,即重新招募人员
+     */
+    void reGroup();
+
+    /**
+     * 是否有工人
+     * @return boolean
+     */
+    boolean noWorker();
+
+    /**
+     * 工作组承接的总工作量
+     */
+    LongAdder totalWork();
 }
