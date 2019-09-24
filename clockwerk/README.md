@@ -8,7 +8,7 @@
 * 建造者模式（Builder Pattern）
 * 原型模式（Prototype Pattern）
 
-##### 结构型模式（Structural Patterns）
+###### 结构型模式（Structural Patterns）
 
 * 适配器模式（Adapter Pattern）
 * 桥接模式（Bridge Pattern）
@@ -19,7 +19,7 @@
 * 享元模式（Flyweight Pattern）
 * 代理模式（Proxy Pattern）
 
-##### 行为型模式（Behavioral Patterns）
+###### 行为型模式（Behavioral Patterns）
 
 * 责任链模式（Chain of Responsibility Pattern）
 * 命令模式（Command Pattern）
