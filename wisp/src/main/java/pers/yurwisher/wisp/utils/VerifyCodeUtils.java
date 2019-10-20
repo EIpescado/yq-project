@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * @author https://blog.csdn.net/ruixue0117/article/details/22829557
@@ -19,6 +20,8 @@ public class VerifyCodeUtils {
      * 使用到Algerian字体，系统里没有的话需要安装字体，字体只显示大写，去掉了1,0,i,o几个容易混淆的字符
      */
     private static final String VERIFY_CODES = "23456789ABCDEFGHJKLMNPQRSTUVWXYZ";
+
+    private static final String NUMBER_VERIFY_CODES = "0123456789";
 
     private static Random random = new Random();
 
@@ -33,6 +36,15 @@ public class VerifyCodeUtils {
     }
 
     /**
+     * 生成指定位数数字验证码
+     * @param verifySize 位数
+     * @return 验证码
+     */
+    public static String generateNumberVerifyCode(int verifySize){
+        return generateVerifyCode(verifySize,NUMBER_VERIFY_CODES);
+    }
+
+    /**
      * 使用指定源生成验证码
      *
      * @param verifySize 验证码长度
@@ -44,11 +56,9 @@ public class VerifyCodeUtils {
             sources = VERIFY_CODES;
         }
         int codesLen = sources.length();
-        //add seed
-        Random random = new Random(System.currentTimeMillis());
         StringBuilder verifyCode = new StringBuilder(verifySize);
         for (int i = 0; i < verifySize; i++) {
-            verifyCode.append(sources.charAt(random.nextInt(codesLen - 1)));
+            verifyCode.append(sources.charAt(ThreadLocalRandom.current().nextInt(codesLen)));
         }
         return verifyCode.toString();
     }
