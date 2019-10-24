@@ -33,6 +33,7 @@ public enum CustomTipEnum implements ICustomTipEnum {
     METHOD_NOT_ALLOWED(CustomTip.of(405,"405,method not allowed")),
     UNSUPPORTED_MEDIA_TYPE(CustomTip.of(415,"415,Unsupported Media Type")),
     SERVER_ERROR(CustomTip.of(500,"500,server error")),
+    PARAMS_ERROR(CustomTip.of(220,"params error")),
     ;
 
     private CustomTip tip;

@@ -1,5 +1,10 @@
 package pers.yurwisher.wisp.utils;
 
+import pers.yurwisher.wisp.constants.SymbolConstants;
+import pers.yurwisher.wisp.enums.CustomTipEnum;
+import pers.yurwisher.wisp.exception.CustomException;
+import pers.yurwisher.wisp.wrapper.CustomTip;
+
 import java.util.StringTokenizer;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.regex.Matcher;
@@ -451,6 +456,60 @@ public class StringUtils {
         sbuf.append(strPattern, handledPosition, strPattern.length());
 
         return sbuf.toString();
+    }
+
+    /**
+     * 字符串脱敏
+     *
+     * @param str         原始字符串
+     * @param start       起始 0起始
+     * @param end         结束
+     * @param replaceChar 替换的字符
+     * @return 脱敏后字符串
+     */
+    public static String desensitize(String str, int start, int end, String replaceChar) {
+        if (isNotEmpty(str)) {
+            int s = start > 0 ? start : 0;
+            int length = str.length();
+            int e = end < 0 || end > length ? length : end;
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < length; i++) {
+                if (i >= s && i <= e) {
+                    sb.append(replaceChar);
+                } else {
+                    sb.append(str.charAt(i));
+                }
+            }
+            return sb.toString();
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * 字符串脱敏,默认*号
+     *
+     * @param str         原始字符串
+     * @param start       起始 0起始
+     * @param end         结束
+     * @return 脱敏后字符串
+     */
+    public static String desensitize(String str, int start, int end) {
+        return desensitize(str,start,end,SymbolConstants.ASTERISK);
+    }
+
+    /**
+     * 首字符后面字符全部脱敏
+     */
+    public static String desensitizeAfterFirst(String str) {
+        return desensitize(str,1,-1,SymbolConstants.ASTERISK);
+    }
+
+    /**
+     * 手机号脱敏
+     */
+    public static String desensitizePhone(String phone) {
+        return desensitize(phone,3,6,SymbolConstants.ASTERISK);
     }
 
 }
