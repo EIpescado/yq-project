@@ -40,6 +40,13 @@ public class NumberUtils {
      */
     private static final String CN_ZEOR_FULL = "零元" + CN_FULL;
 
+    /**万*/
+    private static final BigDecimal TEN_THOUSAND = new BigDecimal(10000);
+    /**千*/
+    private static final BigDecimal THOUSAND = new BigDecimal(1000);
+    /**千*/
+    private static final BigDecimal HUNDRED = new BigDecimal(100);
+
     private NumberUtils() {
     }
 
@@ -312,6 +319,21 @@ public class NumberUtils {
         }
     }
 
+    /**
+     * a / b  四舍五入
+     * @param a  a
+     * @param b  b
+     * @param scale 保留小数位
+     * @return 值
+     */
+    public static BigDecimal divide(BigDecimal a ,BigDecimal b, int scale){
+        if(b != null && !equalZero(b)){
+            return a.divide(b,scale,BigDecimal.ROUND_HALF_UP);
+        }else {
+            throw new IllegalArgumentException("除数不能为0");
+        }
+    }
+
     public static boolean isNumberHaveChange(BigDecimal a,BigDecimal b){
         if(a == null){
             return b != null ;
@@ -346,5 +368,16 @@ public class NumberUtils {
      */
     public static int getSixRandom(){
         return  (int)((Math.random()*9+1)*100000);
+    }
+
+    /**
+     * 数字转为以万为单位 不保留小数
+     */
+    public static BigDecimal wan(BigDecimal a){
+        if(a == null || lessThen(a,TEN_THOUSAND)){
+            return BigDecimal.ZERO;
+        }else{
+            return divide(a,TEN_THOUSAND,0);
+        }
     }
 }
