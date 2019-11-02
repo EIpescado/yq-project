@@ -41,11 +41,11 @@ public class NumberUtils {
     private static final String CN_ZEOR_FULL = "零元" + CN_FULL;
 
     /**万*/
-    private static final BigDecimal TEN_THOUSAND = new BigDecimal(10000);
+    public static final BigDecimal TEN_THOUSAND = new BigDecimal(10000);
     /**千*/
-    private static final BigDecimal THOUSAND = new BigDecimal(1000);
-    /**千*/
-    private static final BigDecimal HUNDRED = new BigDecimal(100);
+    public static final BigDecimal THOUSAND = new BigDecimal(1000);
+    /**百*/
+    public static final BigDecimal HUNDRED = new BigDecimal(100);
 
     private NumberUtils() {
     }
