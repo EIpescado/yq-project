@@ -43,7 +43,11 @@ public class ExchangeRateGrabber{
     /**
      * 中行汇率查询页面地址
      */
-    private static final String BANK_OF_CHINA_URL = "http://srh.bankofchina.com/search/whpj/search.jsp";
+    //private static final String BANK_OF_CHINA_URL = "http://srh.bankofchina.com/search/whpj/search.jsp";
+    /**
+     * 2019年12月2日 10:32:12 地址变更
+     */
+    private static final String BANK_OF_CHINA_URL = "https://srh.bankofchina.com/search/whpj/search_cn.jsp";
 
     private static final String BANK_OF_CHINA_URL_FORMAT = "http://srh.bankofchina.com/search/whpj/search.jsp?erectDate=%1$s&nothing=%2$s&pjname=%3$s";
 
