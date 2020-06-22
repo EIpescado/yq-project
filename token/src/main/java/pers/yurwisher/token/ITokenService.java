@@ -49,6 +49,14 @@ public interface ITokenService<T extends Token> {
     String refreshToken(T token);
 
     /**
+     * 刷新token
+     * @param token token对象
+     * @param expireTime 过期时间
+     * @return token字符串
+     */
+    String refreshToken(T token,Long expireTime);
+
+    /**
      * 是否可以刷新token
      * @param token  token
      * @return boolean

@@ -467,7 +467,7 @@ public class DateUtils {
         Calendar c = new GregorianCalendar(year,month - 1,day);
         return c.getTime();
     }
-    
+
     /**
      *	获取当天时间:  yyyy:MM:dd 00:00:00
      * @return
@@ -567,4 +567,59 @@ public class DateUtils {
         return  c.isLeapYear(year);
     }
 
+    /**
+     * 日期相隔超过多少天
+     * @param begin 起始
+     * @param end 结束
+     * @param days 超过多少天
+     * @return boolean
+     */
+    public static boolean daysBetweenGt(Date begin,Date end,int days){
+        return  daysBetween(begin,end) > days;
+    }
+
+    /**
+     * 日期相隔不小于多少天
+     * @param begin 起始
+     * @param end 结束
+     * @param days 超过多少天
+     * @return boolean
+     */
+    public static boolean daysBetweenGe(Date begin,Date end,int days){
+        return  daysBetween(begin,end) >= days;
+    }
+
+    /**
+     * 日期相隔等于多少天
+     * @param begin 起始
+     * @param end 结束
+     * @param days 超过多少天
+     * @return boolean
+     */
+    public static boolean daysBetweenEq(Date begin,Date end,int days){
+        return  daysBetween(begin,end) == days;
+    }
+
+    /**
+     * 日期相隔小于多少天
+     * @param begin 起始
+     * @param end 结束
+     * @param days 超过多少天
+     * @return boolean
+     */
+    public static boolean daysBetweenLt(Date begin,Date end,int days){
+        return  daysBetween(begin,end) < days;
+    }
+
+
+    /**
+     * 日期相隔小于等于多少天
+     * @param begin 起始
+     * @param end 结束
+     * @param days 超过多少天
+     * @return boolean
+     */
+    public static boolean daysBetweenLe(Date begin,Date end,int days){
+        return  daysBetween(begin,end) <= days;
+    }
 }

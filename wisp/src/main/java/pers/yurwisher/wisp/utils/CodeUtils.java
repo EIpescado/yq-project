@@ -1,4 +1,5 @@
 package pers.yurwisher.wisp.utils;
+import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -8,6 +9,7 @@ import org.apache.commons.codec.digest.DigestUtils;
  * 编解码工具类
  */
 public class CodeUtils {
+    private static final Hex HEX  = new Hex();
 
     private CodeUtils() {
     }
@@ -57,12 +59,28 @@ public class CodeUtils {
     }
 
     /**
+     * Hex加密
+     * @param bytes
+     */
+    public static String encodeHex(byte[] bytes){
+        return Hex.encodeHexString(bytes);
+    }
+
+    /**
      * Hex解密
      * @param  key
      */
-    public static String decodeHex(String key) throws Exception{
-        Hex hex  = new Hex();
-        return new String(hex.decode(key.getBytes()));
+    public static String decodeHex(String key) throws DecoderException {
+
+        return new String(HEX.decode(key.getBytes()));
+    }
+
+    /**
+     * Hex解密
+     * @param  bytes
+     */
+    public static byte[] decodeHexB(byte[] bytes) throws DecoderException {
+        return HEX.decode(bytes);
     }
 
     /**

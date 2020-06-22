@@ -30,4 +30,8 @@ public interface SymbolConstants {
     String ASTERISK = "*";
     /**反斜杠*/
     String BACKSLASH = "\\";
+    /**
+     * 双冒号,用于生成redis key 数组
+     */
+    String DOUBLE_COLON = "::";
 }

@@ -59,4 +59,21 @@ public class Token {
         }
     }
 
+    /**
+     * token是否有效
+     *
+     * @param lastPasswordReset 密码最后重置时间戳
+     * @return token是否有效
+     */
+    public boolean validate(Long lastPasswordReset) {
+        //已过期
+        if (expiration <= System.currentTimeMillis()) {
+            return false;
+        } else {
+            //token签发时间是否在重置密码之前
+            boolean isCreatedBeforeLastPasswordReset = lastPasswordReset != null && dateCreated < lastPasswordReset;
+            return !isCreatedBeforeLastPasswordReset;
+        }
+    }
+
 }

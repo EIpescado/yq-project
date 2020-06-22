@@ -80,6 +80,11 @@ public class TokenServiceImpl<T extends Token> implements ITokenService<T> {
     }
 
     @Override
+    public String refreshToken(T token, Long expireTime) {
+        return generateToken(token,expireTime);
+    }
+
+    @Override
     public boolean canRefresh(T token) {
         return System.currentTimeMillis() - token.getDateCreated() >= tokenHelper.getRefreshTime();
     }
