@@ -9,16 +9,14 @@ import pers.yurwisher.wechat.common.constants.WeChatConstant;
 import pers.yurwisher.wechat.common.enums.MpErrorEnum;
 import pers.yurwisher.wechat.common.enums.WxType;
 import pers.yurwisher.wechat.common.utils.Utils;
-import pers.yurwisher.wechat.common.utils.crypto.MsgCrypt;
 import pers.yurwisher.wechat.common.utils.http.HttpRequest;
-import pers.yurwisher.wechat.common.utils.http.apache.HttpRequestApacheImpl;
+import pers.yurwisher.wechat.core.PushConfigRepository;
 import pers.yurwisher.wechat.exception.WeChatException;
 import pers.yurwisher.wechat.mp.api.KefuService;
 import pers.yurwisher.wechat.mp.api.MpService;
 import pers.yurwisher.wechat.mp.api.TemplateService;
-import pers.yurwisher.wechat.mp.api.TokenService;
-import pers.yurwisher.wechat.mp.api.MpConfigRepository;
 import pers.yurwisher.wechat.mp.api.WxMenuService;
+import pers.yurwisher.wechat.core.CoreService;
 
 import java.util.List;
 
@@ -34,21 +32,12 @@ public class MpServiceImpl implements MpService {
     private static final Logger logger = LoggerFactory.getLogger(MpServiceImpl.class);
 
     private TemplateService templateService = new TemplateServiceImpl(this);
-    private TokenService tokenService = new TokenServiceImpl(this);
-    private HttpRequest httpRequest;
-    private MpConfigRepository wxConfigRepository;
-    private MsgCrypt msgCrypt ;
     private WxMenuService wxMenuService = new WxMenuServiceImpl(this);
     private KefuService kefuService = new KefuServiceImpl(this);
+    private CoreService coreService;
 
-    public MpServiceImpl(MpConfigRepository wxConfigRepository) {
-        this.wxConfigRepository = wxConfigRepository;
-        this.httpRequest = HttpRequestApacheImpl.INSTANCE;
-    }
-
-    public MpServiceImpl(HttpRequest httpRequest, MpConfigRepository wxConfigRepository) {
-        this.httpRequest = httpRequest;
-        this.wxConfigRepository = wxConfigRepository;
+    public MpServiceImpl(CoreService coreService) {
+        this.coreService = coreService;
     }
 
     @Override
@@ -56,19 +45,15 @@ public class MpServiceImpl implements MpService {
         return templateService;
     }
 
-    @Override
-    public TokenService getTokenService() {
-        return tokenService;
-    }
 
     @Override
     public HttpRequest getHttpRequest() {
-        return httpRequest;
+        return coreService.getHttpRequest();
     }
 
     @Override
-    public MpConfigRepository getMpConfigRepository() {
-        return wxConfigRepository;
+    public PushConfigRepository getConfigRepository() {
+        return coreService.getConfigRepository();
     }
 
     @Override
@@ -89,7 +74,7 @@ public class MpServiceImpl implements MpService {
                         || Integer.toString(MpErrorEnum.CODE_40014.getCode()).equals(errorCode)) {
                     //作废token 下次请求自动刷新
                     logger.info("token已无效,自动刷新token");
-                    wxConfigRepository.expireAccessToken();
+                    coreService.getConfigRepository().expireAccessToken();
                 }
                 logger.error("错误码:{},详情:{}", errorCode, json.getString(WeChatConstant.ERROR_MSG_KEY));
                 /**优先返回中文信息,微信接口返回为英文提示*/
@@ -104,13 +89,6 @@ public class MpServiceImpl implements MpService {
         }
     }
 
-    @Override
-    public MsgCrypt getMsgCrypt() {
-        if(msgCrypt == null){
-            msgCrypt = new MsgCrypt(wxConfigRepository.getToken(),wxConfigRepository.getAesKey(),wxConfigRepository.getAppId());
-        }
-        return msgCrypt;
-    }
 
     @Override
     public WxMenuService getWxMenuService() {
@@ -119,7 +97,7 @@ public class MpServiceImpl implements MpService {
 
     @Override
     public List<String> getCallbackIP() {
-        String responseStr = httpRequest.getWithToken(GET_CALL_BACK_IP_URL ,wxConfigRepository.getAccessToken());
+        String responseStr = coreService.getHttpRequest().getWithToken(GET_CALL_BACK_IP_URL ,coreService.getConfigRepository().getAccessToken());
         JSONObject json =  judgeValidParseJSON(responseStr, WxType.MP);
         JSONArray array = json.getJSONArray("ip_list");
         if(Utils.isNotEmpty(array)){

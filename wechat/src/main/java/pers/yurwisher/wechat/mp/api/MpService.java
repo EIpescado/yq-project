@@ -2,8 +2,8 @@ package pers.yurwisher.wechat.mp.api;
 
 import com.alibaba.fastjson.JSONObject;
 import pers.yurwisher.wechat.common.enums.WxType;
-import pers.yurwisher.wechat.common.utils.crypto.MsgCrypt;
 import pers.yurwisher.wechat.common.utils.http.HttpRequest;
+import pers.yurwisher.wechat.core.PushConfigRepository;
 import pers.yurwisher.wechat.exception.WeChatException;
 
 import java.util.List;
@@ -28,12 +28,6 @@ public interface MpService {
     TemplateService getTemplateService();
 
     /**
-     * token service
-     * @return TokenService
-     */
-    TokenService getTokenService();
-
-    /**
      * 请求 service
      * @return HttpRequest
      */
@@ -43,7 +37,7 @@ public interface MpService {
      * 微信配置仓库
      * @return MpConfigRepository
      */
-    MpConfigRepository getMpConfigRepository();
+    PushConfigRepository getConfigRepository();
 
     /**
      * 验证及转化 接口返回json
@@ -54,11 +48,6 @@ public interface MpService {
      */
     JSONObject judgeValidParseJSON(String responseStr, WxType type) throws WeChatException;
 
-    /**
-     * 提供接收和推送给公众平台消息的加解密接口
-     * @return MsgCrypt
-     */
-    MsgCrypt getMsgCrypt();
 
     /**
      * 微信菜单service

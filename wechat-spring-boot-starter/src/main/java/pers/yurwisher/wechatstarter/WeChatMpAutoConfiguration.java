@@ -10,10 +10,13 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import pers.yurwisher.wechat.core.WeChatMpServlet;
+import pers.yurwisher.wechat.core.CoreService;
+import pers.yurwisher.wechat.core.PushConfigRepository;
+import pers.yurwisher.wechat.core.impl.CoreServiceImpl;
+import pers.yurwisher.wechat.core.impl.DefaultPushConfigRepository;
+import pers.yurwisher.wechat.mp.WeChatMpServlet;
 import pers.yurwisher.wechat.mp.api.MpService;
 import pers.yurwisher.wechat.mp.api.WxMessageRouter;
-import pers.yurwisher.wechat.mp.api.impl.DefaultMpConfigRepository;
 import pers.yurwisher.wechat.mp.api.impl.MpServiceImpl;
 
 /**
@@ -41,26 +44,28 @@ public class WeChatMpAutoConfiguration {
     }
 
     @Bean
-    //表示当classPath下存在HelloService.class文件时改配置文件类才有效
-    @ConditionalOnClass(value = MpService.class)
-    @ConditionalOnMissingBean(MpService.class)
-    public MpService mpService(){
-        DefaultMpConfigRepository repository = new DefaultMpConfigRepository();
-        repository.setAppId(weChatConfig.getAppId());
-        repository.setSecret(weChatConfig.getSecret());
-        repository.setToken(weChatConfig.getServerToken());
-        repository.setAesKey(weChatConfig.getAesKey());
-        MpService mpService = new MpServiceImpl(repository);
-        repository.setMpService(mpService);
-        return mpService;
+    @ConditionalOnClass(value = CoreService.class)
+    @ConditionalOnMissingBean(name = "mpCoreService")
+    public CoreService mpCoreService(){
+        DefaultPushConfigRepository repository = new DefaultPushConfigRepository(weChatConfig.getConfig());
+        CoreService coreService = new CoreServiceImpl(repository);
+        repository.setCoreService(coreService);
+        return coreService;
     }
 
     @Bean
-    @ConditionalOnClass(value = {WeChatMpServlet.class,WxMessageRouter.class,MpService.class})
+    @ConditionalOnClass(value = MpService.class)
+    @ConditionalOnMissingBean(MpService.class)
+    public MpService mpService(CoreService mpCoreService){
+        return new MpServiceImpl(mpCoreService);
+    }
+
+    @Bean
+    @ConditionalOnClass(value = {WeChatMpServlet.class,WxMessageRouter.class,CoreService.class})
     @ConditionalOnMissingBean(name = "weChatMpServlet")
-    public ServletRegistrationBean weChatMpServlet(MpService mpService){
+    public ServletRegistrationBean weChatMpServlet(CoreService mpCoreService){
         logger.info("init weChatMpServlet");
-        return new ServletRegistrationBean(new WeChatMpServlet(wxMessageRouter,mpService),weChatConfig.getServerUrl());
+        return new ServletRegistrationBean(new WeChatMpServlet(wxMessageRouter,mpCoreService),weChatConfig.getConfig().getServerUrl());
     }
 
 }

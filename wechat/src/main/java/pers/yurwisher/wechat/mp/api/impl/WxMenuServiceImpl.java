@@ -27,7 +27,7 @@ public class WxMenuServiceImpl implements WxMenuService {
     public String create(WxMenu wxMenu) {
         if (wxMenu != null && Utils.isNotEmpty(wxMenu.getButton())) {
             String url = wxMenu.getWxMenuRule() != null ? CREATE_CONDITIONAL_POST_URL : CREATE_POST_URL;
-            String responseStr = mpService.getHttpRequest().postWithToken(url, mpService.getMpConfigRepository().getAccessToken(), wxMenu.toJSON());
+            String responseStr = mpService.getHttpRequest().postWithToken(url, mpService.getConfigRepository().getAccessToken(), wxMenu.toJSON());
             JSONObject json = mpService.judgeValidParseJSON(responseStr, WxType.MP);
             return json.getString("menuid");
         }
@@ -36,14 +36,14 @@ public class WxMenuServiceImpl implements WxMenuService {
 
     @Override
     public WxMpMenu get() {
-        String responseStr = mpService.getHttpRequest().getWithToken(GET_URL, mpService.getMpConfigRepository().getAccessToken());
+        String responseStr = mpService.getHttpRequest().getWithToken(GET_URL, mpService.getConfigRepository().getAccessToken());
         JSONObject json = mpService.judgeValidParseJSON(responseStr, WxType.MP);
         return json.toJavaObject(WxMpMenu.class);
     }
 
     @Override
     public void delete() {
-        String responseStr = mpService.getHttpRequest().getWithToken(DELETE_GET_URL, mpService.getMpConfigRepository().getAccessToken());
+        String responseStr = mpService.getHttpRequest().getWithToken(DELETE_GET_URL, mpService.getConfigRepository().getAccessToken());
         mpService.judgeValidParseJSON(responseStr, WxType.MP);
     }
 
@@ -56,7 +56,7 @@ public class WxMenuServiceImpl implements WxMenuService {
     public void deleteConditional(String menuId) {
         if (Utils.isNotEmpty(menuId)) {
             String jsonParams = new JSONObject().fluentPut("menuid", menuId).toJSONString();
-            String responseStr = mpService.getHttpRequest().postWithToken(DELETE_CONDITIONAL_POST_URL, mpService.getMpConfigRepository().getAccessToken(), jsonParams);
+            String responseStr = mpService.getHttpRequest().postWithToken(DELETE_CONDITIONAL_POST_URL, mpService.getConfigRepository().getAccessToken(), jsonParams);
             mpService.judgeValidParseJSON(responseStr, WxType.MP);
         }
     }
@@ -71,7 +71,7 @@ public class WxMenuServiceImpl implements WxMenuService {
     public WxMenu tryMatch(String userId) {
         if (Utils.isNotEmpty(userId)) {
             String jsonParams = new JSONObject().fluentPut("user_id", userId).toJSONString();
-            String responseStr = mpService.getHttpRequest().postWithToken(TRY_MATCH_POST_URL, mpService.getMpConfigRepository().getAccessToken(), jsonParams);
+            String responseStr = mpService.getHttpRequest().postWithToken(TRY_MATCH_POST_URL, mpService.getConfigRepository().getAccessToken(), jsonParams);
             JSONObject json = mpService.judgeValidParseJSON(responseStr, WxType.MP);
             //接口文档为直接button返回,实际为外侧还有一层menu
             return json.getObject("menu", WxMenu.class);
@@ -86,7 +86,7 @@ public class WxMenuServiceImpl implements WxMenuService {
      */
     @Override
     public WxMpGetSelfMenuInfoResult getCurrentSelfMenuInfo() {
-        String responseStr = mpService.getHttpRequest().getWithToken(GET_CURRENT_SELF_MENU_INFO_GET_URL, mpService.getMpConfigRepository().getAccessToken());
+        String responseStr = mpService.getHttpRequest().getWithToken(GET_CURRENT_SELF_MENU_INFO_GET_URL, mpService.getConfigRepository().getAccessToken());
         JSONObject json = mpService.judgeValidParseJSON(responseStr, WxType.MP);
         return json.toJavaObject(WxMpGetSelfMenuInfoResult.class);
     }

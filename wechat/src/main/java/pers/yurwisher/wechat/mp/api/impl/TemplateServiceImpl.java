@@ -40,7 +40,7 @@ public class TemplateServiceImpl implements TemplateService {
      */
     @Override
     public List<Template> getAllTemplate() {
-        String responseStr = mpService.getHttpRequest().getWithToken(GET_ALL_PRIVATE_TEMPLATE_URL, mpService.getMpConfigRepository().getAccessToken());
+        String responseStr = mpService.getHttpRequest().getWithToken(GET_ALL_PRIVATE_TEMPLATE_URL, mpService.getConfigRepository().getAccessToken());
         JSONObject json = mpService.judgeValidParseJSON(responseStr, WxType.MP);
         JSONArray array = json.getJSONArray("template_list");
         if (Utils.isNotEmpty(array)) {
@@ -61,7 +61,7 @@ public class TemplateServiceImpl implements TemplateService {
     @Override
     public void sendTemplateMessage(TemplateMessage templateMessage) {
         String messageJSON = JSON.toJSONString(templateMessage);
-        String responseStr = mpService.getHttpRequest().postWithToken(SEND_TEMPLATE_MESSAGE_URL, mpService.getMpConfigRepository().getAccessToken(), messageJSON);
+        String responseStr = mpService.getHttpRequest().postWithToken(SEND_TEMPLATE_MESSAGE_URL, mpService.getConfigRepository().getAccessToken(), messageJSON);
         JSONObject json = mpService.judgeValidParseJSON(responseStr, WxType.MP);
         logger.info("发送模版消息成功,消息ID:{}", json.getString("msgid"));
     }
@@ -114,7 +114,7 @@ public class TemplateServiceImpl implements TemplateService {
      */
     @Override
     public MpIndustry getIndustry() {
-        String responseStr = mpService.getHttpRequest().getWithToken(GET_INDUSTRY_URL, mpService.getMpConfigRepository().getAccessToken());
+        String responseStr = mpService.getHttpRequest().getWithToken(GET_INDUSTRY_URL, mpService.getConfigRepository().getAccessToken());
         JSONObject json = mpService.judgeValidParseJSON(responseStr, WxType.MP);
         return json.toJavaObject(MpIndustry.class);
     }
@@ -128,7 +128,7 @@ public class TemplateServiceImpl implements TemplateService {
     @Override
     public void setIndustry(Integer industryId1, Integer industryId2) {
         JSONObject param = new JSONObject().fluentPut("industry_id1", industryId1).fluentPut("industry_id2", industryId2);
-        String responseStr = mpService.getHttpRequest().postWithToken(API_SET_INDUSTRY_URL, mpService.getMpConfigRepository().getAccessToken(), param.toJSONString());
+        String responseStr = mpService.getHttpRequest().postWithToken(API_SET_INDUSTRY_URL, mpService.getConfigRepository().getAccessToken(), param.toJSONString());
         mpService.judgeValidParseJSON(responseStr, WxType.MP);
     }
 
@@ -140,7 +140,7 @@ public class TemplateServiceImpl implements TemplateService {
     @Override
     public void delTemplate(String templateId) {
         JSONObject param = new JSONObject().fluentPut("template_id", templateId);
-        String responseStr = mpService.getHttpRequest().postWithToken(DEL_PRIVATE_TEMPLATE_URL, mpService.getMpConfigRepository().getAccessToken(), param.toJSONString());
+        String responseStr = mpService.getHttpRequest().postWithToken(DEL_PRIVATE_TEMPLATE_URL, mpService.getConfigRepository().getAccessToken(), param.toJSONString());
         mpService.judgeValidParseJSON(responseStr, WxType.MP);
     }
 

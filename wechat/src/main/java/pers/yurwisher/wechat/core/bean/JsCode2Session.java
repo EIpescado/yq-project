@@ -1,4 +1,4 @@
-package pers.yurwisher.wechat.open.bean;
+package pers.yurwisher.wechat.core.bean;
 
 import lombok.Data;
 

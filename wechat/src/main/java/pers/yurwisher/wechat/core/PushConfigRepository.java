@@ -1,16 +1,26 @@
-package pers.yurwisher.wechat.mp.api;
-
+package pers.yurwisher.wechat.core;
 
 import pers.yurwisher.wechat.common.base.WxAccessToken;
-import pers.yurwisher.wechat.core.BaseConfigRepository;
 
 /**
  * @author yq
- * @date 2018/07/20 16:51
- * @description 微信配置存储
+ * @date 2018/12/18 15:01
+ * @description 带消息推送的微信配置
  * @since V1.0.0
  */
-public interface MpConfigRepository extends BaseConfigRepository {
+public interface PushConfigRepository {
+
+    /**
+     * appId
+     * @return appId
+     */
+    String getAppId();
+
+    /**
+     * secret
+     * @return secret
+     */
+    String getSecret();
 
     /**服务器配置令牌 token*/
     String getToken();
@@ -36,5 +46,4 @@ public interface MpConfigRepository extends BaseConfigRepository {
      * 作废token
      */
     void expireAccessToken();
-
 }

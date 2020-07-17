@@ -682,4 +682,7 @@ public enum MpErrorEnum {
         return description;
     }
 
+    public boolean eq(Integer code){
+        return this.code == code;
+    }
 }

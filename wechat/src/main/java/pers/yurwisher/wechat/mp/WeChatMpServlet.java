@@ -1,12 +1,12 @@
-package pers.yurwisher.wechat.core;
+package pers.yurwisher.wechat.mp;
 
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pers.yurwisher.wechat.common.utils.Utils;
 import pers.yurwisher.wechat.common.utils.crypto.SHA1;
+import pers.yurwisher.wechat.core.CoreService;
 import pers.yurwisher.wechat.exception.AesException;
-import pers.yurwisher.wechat.mp.api.MpService;
 import pers.yurwisher.wechat.mp.api.WxMessageRouter;
 import pers.yurwisher.wechat.mp.in.WxMpXmlMessage;
 import pers.yurwisher.wechat.mp.message.WxMessage;
@@ -31,11 +31,11 @@ public class WeChatMpServlet extends HttpServlet {
     private static final String EMPTY = "";
 
     private WxMessageRouter wxMessageRouter;
-    private MpService mpService;
+    private CoreService coreService;
 
-    public WeChatMpServlet(WxMessageRouter wxMessageRouter, MpService mpService) {
+    public WeChatMpServlet(WxMessageRouter wxMessageRouter, CoreService coreService) {
         this.wxMessageRouter = wxMessageRouter;
-        this.mpService = mpService;
+        this.coreService = coreService;
     }
 
     @Override
@@ -59,7 +59,7 @@ public class WeChatMpServlet extends HttpServlet {
         //字段提取成功
         if (Utils.isNotEmpty(signature) && Utils.isNotEmpty(nonce)) {
             //token ,timestamp,nonce 字典序排序拼接成字符串,并通过sha1加密得到字符串
-            String hashcode = SHA1.gen(mpService.getMpConfigRepository().getToken(), timestamp, nonce);
+            String hashcode = SHA1.gen(coreService.getConfigRepository().getToken(), timestamp, nonce);
             //确定该数据是不是来源于微信后台
             boolean isFromWx = hashcode.equals(signature);
             logger.debug("数据是否来源于微信后台:{}", isFromWx);
@@ -96,7 +96,7 @@ public class WeChatMpServlet extends HttpServlet {
             //解密消息报文
             try {
                 //消息解密后结果
-                postData = mpService.getMsgCrypt().decryptMsg(msgSignature, timestamp, nonce, postData);
+                postData = coreService.getMsgCrypt().decryptMsg(msgSignature, timestamp, nonce, postData);
                 //映射成对象
                 WxMpXmlMessage xmlMessage = WxMpXmlMessage.fromXml(postData);
                 logger.info("消息类型:{},消息ID:{},用户openId:{}", xmlMessage.getMsgType(), xmlMessage.getMsgId(), xmlMessage.getFromUser());
@@ -104,7 +104,7 @@ public class WeChatMpServlet extends HttpServlet {
                 WxMessage wxMessage = wxMessageRouter.route(xmlMessage);
                 if (wxMessage != null) {
                     //加密
-                    String resultXml = mpService.getMsgCrypt().generateEncryptedXml(wxMessage.toXml());
+                    String resultXml = coreService.getMsgCrypt().generateEncryptedXml(wxMessage.toXml());
                     logger.debug("加密后的消息报文:{}", resultXml);
                     response.getWriter().write(resultXml);
                     return;

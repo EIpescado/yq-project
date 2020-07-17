@@ -1,28 +1,33 @@
-package pers.yurwisher.wechat.mp.api.impl;
+package pers.yurwisher.wechat.core.impl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pers.yurwisher.wechat.common.base.WxAccessToken;
-import pers.yurwisher.wechat.mp.api.MpService;
-import pers.yurwisher.wechat.mp.api.MpConfigRepository;
-
+import pers.yurwisher.wechat.core.PushConfigRepository;
+import pers.yurwisher.wechat.core.CoreService;
+import pers.yurwisher.wechat.core.bean.WeChatPushConfig;
 
 /**
  * @author yq
- * @date 2018/07/20 15:03
- * @description 默认微信配置存储 内存
+ * @date 2020/07/16 12:13
+ * @description 默认的带消息推送的微信配置
  * @since V1.0.0
  */
-public class DefaultMpConfigRepository implements MpConfigRepository {
+public class DefaultPushConfigRepository implements PushConfigRepository {
+    private static final Logger logger = LoggerFactory.getLogger(DefaultPushConfigRepository.class);
 
-    private static final Logger logger = LoggerFactory.getLogger(DefaultMpConfigRepository.class);
+    private CoreService coreService;
 
-    private MpService mpService;
-
-    public void setMpService(MpService mpService) {
-        this.mpService = mpService;
+    public DefaultPushConfigRepository(WeChatPushConfig weChatPushConfig) {
+      this.appId = weChatPushConfig.getAppId();
+      this.secret = weChatPushConfig.getSecret();
+      this.token = weChatPushConfig.getToken();
+      this.aesKey = weChatPushConfig.getAesKey();
     }
 
+    public void setCoreService(CoreService coreService) {
+        this.coreService = coreService;
+    }
     /**
      * 公众号对应appId 开发者ID
      */
@@ -53,17 +58,9 @@ public class DefaultMpConfigRepository implements MpConfigRepository {
         return appId;
     }
 
-    public void setAppId(String appId) {
-        this.appId = appId;
-    }
-
     @Override
     public String getSecret() {
         return secret;
-    }
-
-    public void setSecret(String secret) {
-        this.secret = secret;
     }
 
     @Override
@@ -71,17 +68,9 @@ public class DefaultMpConfigRepository implements MpConfigRepository {
         return token;
     }
 
-    public void setToken(String token) {
-        this.token = token;
-    }
-
     @Override
     public String getAesKey() {
         return aesKey;
-    }
-
-    public void setAesKey(String aesKey) {
-        this.aesKey = aesKey;
     }
 
     @Override
@@ -89,7 +78,7 @@ public class DefaultMpConfigRepository implements MpConfigRepository {
         //token已作废
         if(expiresTime == -1L || expiresTime - System.currentTimeMillis() <= 0){
             if(isAutoRefresh()){
-                WxAccessToken newToken = mpService.getTokenService().getAccessToken(appId,secret);
+                WxAccessToken newToken = coreService.getAccessToken();
                 updateAccessToken(newToken);
             }
         }
