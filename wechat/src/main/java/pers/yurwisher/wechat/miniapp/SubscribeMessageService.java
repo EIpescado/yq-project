@@ -1,5 +1,6 @@
 package pers.yurwisher.wechat.miniapp;
 
+import com.alibaba.fastjson.JSONObject;
 import pers.yurwisher.wechat.miniapp.message.SubscribeMessage;
 
 /**
@@ -20,4 +21,11 @@ public interface SubscribeMessageService {
      * @param subscribeMessage 订阅消息
      */
     void send(SubscribeMessage subscribeMessage);
+
+    /**
+     * 构建data
+     * @param jsonObject 参数
+     * @return data
+     */
+    JSONObject buildData(JSONObject jsonObject);
 }

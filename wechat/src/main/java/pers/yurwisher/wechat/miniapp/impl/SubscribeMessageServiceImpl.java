@@ -4,10 +4,10 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import pers.yurwisher.wechat.core.CoreService;
 import pers.yurwisher.wechat.miniapp.SubscribeMessageService;
 import pers.yurwisher.wechat.miniapp.message.SubscribeMessage;
 import pers.yurwisher.wechat.mp.api.impl.TemplateServiceImpl;
-import pers.yurwisher.wechat.core.CoreService;
 
 /**
  * @author yq
@@ -30,5 +30,17 @@ public class SubscribeMessageServiceImpl implements SubscribeMessageService {
         String responseStr = coreService.getHttpRequest().postWithToken(SEND_TEMPLATE_MESSAGE_URL,coreService.getConfigRepository().getAccessToken(), JSON.toJSONString(subscribeMessage));
         JSONObject json = coreService.judgeValidParseJSON(responseStr);
         logger.info("推送小程序订阅消息成功,消息ID:[{}]", json.getString("msgid"));
+    }
+
+    @Override
+    public JSONObject buildData(JSONObject jsonObject) {
+        if(jsonObject != null && !jsonObject.isEmpty()){
+            JSONObject data = new JSONObject();
+            jsonObject.forEach((key,value) -> {
+                data.put(key,new JSONObject().fluentPut("value",value));
+            });
+            return data;
+        }
+        return null;
     }
 }
