@@ -1,6 +1,9 @@
 package pers.yurwisher.wechat.common.utils.http;
 
+import com.alibaba.fastjson.JSONObject;
+
 import java.io.File;
+import java.util.Map;
 
 /**
  * @author yq
@@ -24,6 +27,15 @@ public interface HttpRequest {
      * @return 请求结果
      */
     String getWithToken(String url, String token);
+
+    /**
+     * get请求
+     * @param url 地址
+     * @param token token
+     * @param otherParams
+     * @return 请求结果
+     */
+    String getWithToken(String url, String token,String otherParams);
 
     /**
      * post 请求

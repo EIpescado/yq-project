@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
+import java.util.Map;
 import java.util.StringTokenizer;
 
 /**
@@ -27,6 +28,10 @@ public class Utils {
 
     public static boolean isNotEmpty(Collection collection){
         return collection != null && ! collection.isEmpty();
+    }
+
+    public static boolean isNotEmpty(Map map){
+        return map != null && ! map.isEmpty();
     }
 
     public static Integer size(Collection collection){

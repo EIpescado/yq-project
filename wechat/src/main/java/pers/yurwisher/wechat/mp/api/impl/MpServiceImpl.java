@@ -17,6 +17,9 @@ import pers.yurwisher.wechat.mp.api.MpService;
 import pers.yurwisher.wechat.mp.api.TemplateService;
 import pers.yurwisher.wechat.mp.api.WxMenuService;
 import pers.yurwisher.wechat.core.CoreService;
+import pers.yurwisher.wechat.mp.bean.WxMpUser;
+import pers.yurwisher.wechat.mp.bean.WxMpUserList;
+import pers.yurwisher.wechat.mp.bean.WxMpUserQuery;
 
 import java.util.List;
 
@@ -57,7 +60,7 @@ public class MpServiceImpl implements MpService {
     }
 
     @Override
-    public JSONObject judgeValidParseJSON(String responseStr, WxType type) {
+    public JSONObject judgeValidParseJSON(String responseStr, WxType type) throws WeChatException{
         if (Utils.isNotEmpty(responseStr)) {
             JSONObject json = JSON.parseObject(responseStr);
             String errorCode = json.getString(WeChatConstant.ERROR_CODE_KEY);
@@ -96,7 +99,7 @@ public class MpServiceImpl implements MpService {
     }
 
     @Override
-    public List<String> getCallbackIP() {
+    public List<String> getCallbackIP() throws WeChatException{
         String responseStr = coreService.getHttpRequest().getWithToken(GET_CALL_BACK_IP_URL ,coreService.getConfigRepository().getAccessToken());
         JSONObject json =  judgeValidParseJSON(responseStr, WxType.MP);
         JSONArray array = json.getJSONArray("ip_list");
@@ -109,6 +112,29 @@ public class MpServiceImpl implements MpService {
     @Override
     public KefuService getKefuService() {
         return kefuService;
+    }
+
+    @Override
+    public WxMpUserList getUserList(String nextOpenid) throws WeChatException {
+        String responseStr = coreService.getHttpRequest().getWithToken(GET_USER_LIST_URL ,coreService.getConfigRepository().getAccessToken(),"&next_openid=" + nextOpenid);
+        JSONObject json =  judgeValidParseJSON(responseStr, WxType.MP);
+        return json.toJavaObject(WxMpUserList.class);
+    }
+
+    @Override
+    public WxMpUser getUserInfo(String openId) throws WeChatException {
+        String responseStr = coreService.getHttpRequest().getWithToken(GET_USER_INFO_URL ,coreService.getConfigRepository().getAccessToken(),"&lang=zh_CN&openid=" + openId);
+        JSONObject json =  judgeValidParseJSON(responseStr, WxType.MP);
+        return json.toJavaObject(WxMpUser.class);
+    }
+
+    @Override
+    public List<WxMpUser> batchGetUserInfo(List<String> openIds) throws WeChatException {
+        WxMpUserQuery query = new WxMpUserQuery(openIds);
+        String responseStr = coreService.getHttpRequest().postWithToken(BATCH_GET_USER_INFO_URL ,coreService.getConfigRepository().getAccessToken(),JSON.toJSONString(query));
+        JSONObject json =  judgeValidParseJSON(responseStr, WxType.MP);
+        JSONArray array = json.getJSONArray("user_info_list");
+        return array.toJavaList(WxMpUser.class);
     }
 
 }

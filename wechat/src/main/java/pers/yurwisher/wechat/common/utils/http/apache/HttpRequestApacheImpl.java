@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Map;
 
 /**
  * @author yq
@@ -85,6 +86,11 @@ public class HttpRequestApacheImpl implements HttpRequest {
     @Override
     public String getWithToken(String url, String token) {
         return sendGet(addTokenToUrl(url,token));
+    }
+
+    @Override
+    public String getWithToken(String url, String token, String otherParams) {
+        return sendGet(addTokenToUrl(url,token) + otherParams);
     }
 
     @Override
@@ -240,4 +246,14 @@ public class HttpRequestApacheImpl implements HttpRequest {
         return content ;
     }
 
+    private String buildOtherParamsUrl(Map<String, Object> otherParams){
+        if (Utils.isNotEmpty(otherParams)){
+            StringBuilder sb = new StringBuilder();
+            otherParams.forEach((k,v) ->
+                    sb.append(k).append("=").append(v)
+            );
+            return sb.toString();
+        }
+        return "";
+    }
 }
