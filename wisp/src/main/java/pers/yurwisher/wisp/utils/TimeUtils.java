@@ -92,4 +92,26 @@ public class TimeUtils {
         return dateTime.toInstant(ZoneOffset.of("+8")).toEpochMilli();
     }
 
+    /**
+     * 从身份证中提取出生日期
+     * @param idNumber 身份证号
+     * @return 出生日期
+     */
+    public static LocalDateTime getBirthdayFromIdNumber(String idNumber){
+        String p = StringUtils.null2EmptyWithTrimNew(idNumber);
+        if(StringUtils.isEmpty(p)){
+            return null;
+        }
+        int length = p.length();
+        if(length == 15 || length == 18){
+            try{
+                return LocalDate.parse(p.substring(6,14),YYYYMMDD_FORMATTER).atStartOfDay();
+            }catch (Exception e){
+                return null;
+            }
+        }
+        return null;
+    }
+
+
 }
