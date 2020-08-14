@@ -21,6 +21,10 @@ public class TimeUtils {
 
     private static final DateTimeFormatter YYYYMMDD_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMdd");
 
+    private static final DateTimeFormatter YYYY_SLASH_M_SLASH_D_FORMATTER = DateTimeFormatter.ofPattern("yyyy/M/d");
+
+    private static final DateTimeFormatter YYYY_HYPHEN_M_HYPHEN_D_FORMATTER = DateTimeFormatter.ofPattern("yyyy-M-d");
+
     private TimeUtils() {
 
     }
@@ -74,6 +78,20 @@ public class TimeUtils {
         return LocalDate.parse(s, YYYY_MM_DD_FORMATTER).atStartOfDay();
     }
 
+    public static LocalDateTime formatExcelYMD(String s) {
+        if (StringUtils.isEmpty(s)) {
+            return null;
+        }
+        return LocalDate.parse(s, YYYY_SLASH_M_SLASH_D_FORMATTER).atStartOfDay();
+    }
+
+    public static LocalDateTime formatExcelNormalYMD(String s) {
+        if (StringUtils.isEmpty(s)) {
+            return null;
+        }
+        return LocalDate.parse(s, YYYY_HYPHEN_M_HYPHEN_D_FORMATTER).atStartOfDay();
+    }
+
     public static LocalDateTime formatYMDHMS(String s) {
         if (StringUtils.isEmpty(s)) {
             return null;
@@ -112,6 +130,5 @@ public class TimeUtils {
         }
         return null;
     }
-
 
 }
