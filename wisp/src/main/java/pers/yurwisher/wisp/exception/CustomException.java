@@ -19,12 +19,19 @@ public class CustomException extends RuntimeException {
     }
 
     public CustomException(CustomTip customTip) {
-        super(customTip.getMsg());
         this.customTip = customTip;
+    }
+
+    public CustomException(CustomTip customTip,Object...args) {
+        this.customTip = CustomTip.of(customTip.getCode(),String.format(customTip.getMsg(),args));
     }
 
     public CustomException(ICustomTipEnum customTipEnum){
         this(customTipEnum.tip());
+    }
+
+    public CustomException(ICustomTipEnum customTipEnum,Object...args){
+        this(customTipEnum.tip(),args);
     }
 
 }

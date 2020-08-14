@@ -8,7 +8,7 @@ import java.io.Serializable;
  * @description 自定义提示
  * @since V1.0.0
  */
-public class CustomTip implements Comparable, Serializable {
+public class CustomTip implements Comparable<CustomTip>, Serializable {
 
     private static final long serialVersionUID = 2130725204329165149L;
     /**
@@ -60,8 +60,7 @@ public class CustomTip implements Comparable, Serializable {
     }
 
     @Override
-    public int compareTo(Object o) {
-        CustomTip tip = (CustomTip) o;
-        return tip.getCode().compareTo(this.code);
+    public int compareTo(CustomTip o) {
+        return o.getCode().compareTo(this.code);
     }
 }

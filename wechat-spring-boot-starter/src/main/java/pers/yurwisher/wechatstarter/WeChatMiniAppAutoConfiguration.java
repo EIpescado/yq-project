@@ -2,6 +2,7 @@ package pers.yurwisher.wechatstarter;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -57,6 +58,7 @@ public class WeChatMiniAppAutoConfiguration {
 
     @Bean
     @ConditionalOnClass(value = {WeChatMiniAppServlet.class,CoreService.class})
+    @ConditionalOnBean(name = "weChatMiniAppCoreService")
     @ConditionalOnMissingBean(name = "weChatMiniAppServlet")
     public ServletRegistrationBean weChatMiniAppServlet(CoreService weChatMiniAppCoreService){
         logger.info("init weChatMiniAppServlet");
