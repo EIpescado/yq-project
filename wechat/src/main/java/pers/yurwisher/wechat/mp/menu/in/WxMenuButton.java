@@ -1,9 +1,11 @@
 package pers.yurwisher.wechat.mp.menu.in;
 
 import com.alibaba.fastjson.annotation.JSONField;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import pers.yurwisher.wechat.common.base.JsonBean;
+import pers.yurwisher.wechat.mp.menu.WxMenuType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +29,8 @@ public class WxMenuButton extends JsonBean {
   /**
    * 菜单的响应动作类型，view表示网页类型，click表示点击类型，miniprogram表示小程序类型
    */
-  private String type;
+  @JSONField(serialzeFeatures= SerializerFeature.WriteEnumUsingToString)
+  private WxMenuType type;
 
   /**
    * 菜单标题，不超过16个字节，子菜单不超过60个字节

@@ -15,6 +15,7 @@ import pers.yurwisher.wechat.mp.kf.KefuSession;
 import pers.yurwisher.wechat.mp.kf.KefuSessionWaitCase;
 
 import java.io.File;
+import java.io.InputStream;
 import java.util.List;
 
 /**
@@ -58,7 +59,7 @@ public class KefuServiceImpl implements KefuService {
     }
 
     @Override
-    public void uploadHeadImg(String kfAccount,File imgFile) {
+    public void uploadHeadImg(String kfAccount, InputStream imgFile) {
         if(Utils.isNotEmpty(kfAccount)){
             String responseStr = mpService.getHttpRequest().uploadFile(String.format(UPLOAD_HEAD_IMG_POST_URL,mpService.getConfigRepository().getAccessToken(),kfAccount),imgFile,"media");
             mpService.judgeValidParseJSON(responseStr, WxType.MP);

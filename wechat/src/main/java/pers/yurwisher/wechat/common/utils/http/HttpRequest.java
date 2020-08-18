@@ -1,9 +1,7 @@
 package pers.yurwisher.wechat.common.utils.http;
 
-import com.alibaba.fastjson.JSONObject;
 
-import java.io.File;
-import java.util.Map;
+import java.io.InputStream;
 
 /**
  * @author yq
@@ -54,12 +52,32 @@ public interface HttpRequest {
      */
     String postWithToken(String url, String token, String jsonString);
 
+
     /**
      * 上传文件 post
      * @param url 地址
-     * @param file 文件
+     * @param inputStream 输入流
      * @param mediaKey 文件标识
      * @return 请求结果
      */
-    String uploadFile(String url, File file, String mediaKey);
+    String uploadFile(String url, InputStream inputStream, String mediaKey);
+
+    /**
+     * 上传文件 post
+     * @param url 地址
+     * @param token token
+     * @param inputStream 输入流
+     * @param mediaKey 文件标识
+     * @return 请求结果
+     */
+    String uploadFileWithToken(String url, String token,InputStream inputStream, String mediaKey);
+
+    /**
+     * 上传文件 post
+     * @param url 地址
+     * @param inputStream 输入流
+     * @param mediaKey 文件标识
+     * @return 请求结果
+     */
+    String uploadFile(String url,InputStream inputStream, String mediaKey,String otherKey,String otherParams);
 }

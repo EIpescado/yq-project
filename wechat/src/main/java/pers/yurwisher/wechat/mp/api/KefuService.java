@@ -8,7 +8,7 @@ import pers.yurwisher.wechat.mp.kf.KefuMsgRequest;
 import pers.yurwisher.wechat.mp.kf.KefuSession;
 import pers.yurwisher.wechat.mp.kf.KefuSessionWaitCase;
 
-import java.io.File;
+import java.io.InputStream;
 import java.util.List;
 
 /**
@@ -110,7 +110,7 @@ public interface KefuService {
      * @param kfAccount 客服帐号
      * @param imgFile File 头像图片文件必须是jpg格式 推荐使用640*640大小的图片以达到最佳效果
      */
-    void uploadHeadImg(String kfAccount, File imgFile);
+    void uploadHeadImg(String kfAccount, InputStream imgFile);
 
     /**
      * 获取所有客服账号

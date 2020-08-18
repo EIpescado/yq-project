@@ -106,4 +106,10 @@ public interface MpService {
      * @throws WeChatException
      */
     List<WxMpUser> batchGetUserInfo(List<String> openIds) throws WeChatException;
+
+    /**
+     * 素材service
+     * @return MaterialService
+     */
+    MaterialService getMaterialService();
 }

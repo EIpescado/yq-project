@@ -13,6 +13,7 @@ import pers.yurwisher.wechat.common.utils.http.HttpRequest;
 import pers.yurwisher.wechat.core.PushConfigRepository;
 import pers.yurwisher.wechat.exception.WeChatException;
 import pers.yurwisher.wechat.mp.api.KefuService;
+import pers.yurwisher.wechat.mp.api.MaterialService;
 import pers.yurwisher.wechat.mp.api.MpService;
 import pers.yurwisher.wechat.mp.api.TemplateService;
 import pers.yurwisher.wechat.mp.api.WxMenuService;
@@ -37,6 +38,7 @@ public class MpServiceImpl implements MpService {
     private TemplateService templateService = new TemplateServiceImpl(this);
     private WxMenuService wxMenuService = new WxMenuServiceImpl(this);
     private KefuService kefuService = new KefuServiceImpl(this);
+    private MaterialService materialService = new MaterialServiceImpl(this);
     private CoreService coreService;
 
     public MpServiceImpl(CoreService coreService) {
@@ -135,6 +137,11 @@ public class MpServiceImpl implements MpService {
         JSONObject json =  judgeValidParseJSON(responseStr, WxType.MP);
         JSONArray array = json.getJSONArray("user_info_list");
         return array.toJavaList(WxMpUser.class);
+    }
+
+    @Override
+    public MaterialService getMaterialService() {
+        return materialService;
     }
 
 }

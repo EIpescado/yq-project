@@ -1,5 +1,6 @@
 package pers.yurwisher.wechat.common.utils.http.apache;
 
+import org.apache.http.Consts;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
 import org.apache.http.StatusLine;
@@ -8,9 +9,11 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
+import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.ssl.SSLContextBuilder;
@@ -21,8 +24,8 @@ import pers.yurwisher.wechat.common.utils.Utils;
 import pers.yurwisher.wechat.common.utils.http.HttpRequest;
 
 import javax.net.ssl.SSLContext;
-import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -104,19 +107,39 @@ public class HttpRequestApacheImpl implements HttpRequest {
     }
 
     @Override
-    public String uploadFile(String url, File file,String mediaKey) {
-        if(file != null &&  file.exists()){
-            // 创建httpPost
-            HttpPost httpPost = new HttpPost(url);
-            HttpEntity entity = MultipartEntityBuilder
-                    .create()
-                    .addBinaryBody(mediaKey, file)
-                    .setMode(HttpMultipartMode.RFC6532)
-                    .build();
-            httpPost.setEntity(entity);
-            return post(getDefaultClient(),httpPost);
-        }
-        return null;
+    public String uploadFile(String url, InputStream inputStream, String mediaKey) {
+        // 创建httpPost
+        HttpPost httpPost = new HttpPost(url);
+        HttpEntity entity = MultipartEntityBuilder
+                .create()
+                .addBinaryBody(mediaKey, inputStream)
+                .setMode(HttpMultipartMode.RFC6532)
+                .build();
+        httpPost.setEntity(entity);
+
+        return post(getDefaultClient(),httpPost);
+    }
+
+    @Override
+    public String uploadFileWithToken(String url, String token, InputStream inputStream, String mediaKey) {
+        String realUrl = addTokenToUrl(url,token);
+        return uploadFile(realUrl,inputStream,mediaKey);
+    }
+
+    @Override
+    public String uploadFile(String url, InputStream inputStream, String mediaKey, String otherKey, String otherParams) {
+        // 创建httpPost
+        HttpPost httpPost = new HttpPost(url);
+        StringBody stringBody = new StringBody(otherParams, ContentType.create("text/plain", Consts.UTF_8));
+        HttpEntity entity = MultipartEntityBuilder
+                .create()
+                .addBinaryBody(mediaKey, inputStream)
+                .addPart(otherKey,stringBody)
+                .setMode(HttpMultipartMode.RFC6532)
+                .build();
+        httpPost.setEntity(entity);
+
+        return post(getDefaultClient(),httpPost);
     }
 
     /**
