@@ -11,7 +11,7 @@ import java.io.Serializable;
  * @since V1.0.0
  */
 @Data
-public class WxMpVideoMaterialExtra implements Serializable {
+public class  WxMpVideoMaterialExtra implements Serializable {
     private static final long serialVersionUID = 4361325877115665827L;
 
     private String title;

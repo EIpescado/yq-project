@@ -3,6 +3,7 @@ package pers.yurwisher.wechat.mp.material.out;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * @author yq
@@ -17,4 +18,21 @@ public class WxMpMaterialResult implements Serializable {
     private Long createTime;
 
     private Long updateTime;
+
+    private List<WxMpNewsItem> newsItems;
+
+    /**
+     *  视频素材 标题
+     */
+    private String title;
+
+    /**
+     * 视频素材 描述
+     */
+    private String description;
+
+    /**
+     * 视频素材 下载地址
+     */
+    private String downUrl;
 }

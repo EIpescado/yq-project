@@ -9,6 +9,7 @@ import pers.yurwisher.wechat.mp.material.WxMpMaterialType;
 import pers.yurwisher.wechat.mp.material.in.WxMpMaterialNews;
 import pers.yurwisher.wechat.mp.material.in.WxMpVideoMaterialExtra;
 import pers.yurwisher.wechat.mp.material.out.WxMpAddMaterialResult;
+import pers.yurwisher.wechat.mp.material.out.WxMpMaterialResult;
 
 import java.io.InputStream;
 
@@ -46,5 +47,18 @@ public class MaterialServiceImpl implements MaterialService {
         String responseStr = mpService.getHttpRequest().uploadFile(url,inputStream,"media","description",JSON.toJSONString(extra));
         JSONObject json = mpService.judgeValidParseJSON(responseStr, WxType.MP);
         return json.toJavaObject(WxMpAddMaterialResult.class);
+    }
+
+    @Override
+    public WxMpMaterialResult getMaterial(String mediaId) {
+        String responseStr = mpService.getHttpRequest().postWithToken(GET_MATERIAL_POST_URL,mpService.getConfigRepository().getAccessToken(),new JSONObject().fluentPut("media_id",mediaId).toJSONString());
+        JSONObject json = mpService.judgeValidParseJSON(responseStr, WxType.MP);
+        return json.toJavaObject(WxMpMaterialResult.class);
+    }
+
+    @Override
+    public void deleteMaterial(String mediaId) {
+        String responseStr = mpService.getHttpRequest().postWithToken(DELETE_MATERIAL_POST_URL,mpService.getConfigRepository().getAccessToken(),new JSONObject().fluentPut("media_id",mediaId).toJSONString());
+        mpService.judgeValidParseJSON(responseStr, WxType.MP);
     }
 }

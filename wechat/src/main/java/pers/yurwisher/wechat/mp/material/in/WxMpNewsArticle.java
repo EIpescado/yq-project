@@ -1,5 +1,7 @@
 package pers.yurwisher.wechat.mp.material.in;
 
+import com.alibaba.fastjson.annotation.JSONField;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -18,6 +20,7 @@ public class WxMpNewsArticle implements Serializable {
   /**
    * (必填) 图文消息缩略图的media_id，可以在基础支持-上传多媒体文件接口中获得.
    */
+  @JSONField(name = "thumb_media_id")
   private String thumbMediaId;
   /**
    * 图文消息的作者.
@@ -31,6 +34,7 @@ public class WxMpNewsArticle implements Serializable {
   /**
    * 是否显示封面，true为显示，false为不显示.
    */
+  @JSONField(name = "show_cover_pic")
   private boolean showCoverPic;
 
   /**
@@ -42,19 +46,31 @@ public class WxMpNewsArticle implements Serializable {
   /**
    * 图文消息的原文地址，即点击“阅读原文”后的URL
    */
+  @JSONField(name = "content_source_url")
   private String contentSourceUrl;
 
   /**
-   * need_open_comment
+   * need_open_comment 不可修改
    * 是否打开评论，0不打开，1打开.
    */
+  @JSONField(name = "need_open_comment")
   private Boolean needOpenComment;
 
   /**
-   * only_fans_can_comment
+   * only_fans_can_comment 不可修改
    * 是否粉丝才可评论，0所有人可评论，1粉丝才可评论.
    */
+  @JSONField(name = "only_fans_can_comment")
   private Boolean onlyFansCanComment;
 
+  /**
+   * 修改时必填 要修改的图文消息的id
+   */
+  @JSONField(name = "media_id")
+  private String mediaId;
 
+  /**
+   * 要更新的文章在图文消息中的位置（多图文消息时，此字段才有意义），第一篇为0
+   */
+  private Integer index;
 }

@@ -32,7 +32,13 @@ public interface MaterialService {
     String ADD_MATERIAL_POST_URL = "https://api.weixin.qq.com/cgi-bin/material/add_material?access_token=%1$s&type=%2$s";
 
     /**获取永久素材信息*/
-    String GET_MATERIAL_URL = "https://api.weixin.qq.com/cgi-bin/material/get_material";
+    String GET_MATERIAL_POST_URL = "https://api.weixin.qq.com/cgi-bin/material/get_material";
+
+    /**删除永久素材信息*/
+    String DELETE_MATERIAL_POST_URL = "https://api.weixin.qq.com/cgi-bin/material/del_material";
+
+    /**修改图文消息*/
+    String UPDATE_NEW_POST_URL = "https://api.weixin.qq.com/cgi-bin/material/update_news";
 
     /**
      * 新增永久图文素材
@@ -57,5 +63,16 @@ public interface MaterialService {
      */
     WxMpAddMaterialResult addMaterial(InputStream inputStream, WxMpMaterialType type, WxMpVideoMaterialExtra extra);
 
+    /**
+     * 获取单个永久素材明细  图文,视频之外 其他类型的素材消息，则响应的直接为素材的内容，开发者可以自行保存为文件
+     * @param mediaId 素材ID
+     * @return 结果
+     */
     WxMpMaterialResult getMaterial(String mediaId);
+
+    /**
+     * 删除不再需要的永久素材
+     * @param mediaId 素材ID
+     */
+    void deleteMaterial(String mediaId);
 }
