@@ -109,6 +109,11 @@ public class TemplateServiceImpl implements TemplateService {
         return createTemplateMessage(toUser, templateId, null, null, null, url, data);
     }
 
+    @Override
+    public TemplateMessage createTemplateMessage(String toUser, String templateId, String miniProgramAppId, String pagePath, List<TemplateData> data) {
+        return createTemplateMessage(toUser, templateId, null, miniProgramAppId, pagePath, null, data);
+    }
+
     /**
      * 获取所处行业信息 一个企业只可设置2个行业
      */

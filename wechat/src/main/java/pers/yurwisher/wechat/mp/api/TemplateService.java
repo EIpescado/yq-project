@@ -81,6 +81,20 @@ public interface TemplateService {
      */
     TemplateMessage createTemplateMessage(String toUser, String templateId, String url, List<TemplateData> data);
 
+
+    /**
+     * 发送模版消息
+     *
+     * @param toUser     消息接受人openId
+     * @param templateId 模版id
+     * @param miniProgramAppId 小程序appId
+     * @param pagePath 点击消息跳转的小程序页面
+     * @param data       模版消息数据
+     * @return 消息
+     */
+    TemplateMessage createTemplateMessage(String toUser, String templateId, String miniProgramAppId,
+                                          String pagePath, List<TemplateData> data);
+
     /**
      * 获取所处行业信息 一个企业只可设置2个行业
      */

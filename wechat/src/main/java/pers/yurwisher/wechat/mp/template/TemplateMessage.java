@@ -1,5 +1,6 @@
 package pers.yurwisher.wechat.mp.template;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
 
 /**
@@ -21,6 +22,7 @@ public class TemplateMessage {
     private String url ;
 
     /**跳小程序所需数据，不需跳小程序可不用传该数据*/
+    @JSONField(name = "miniprogram")
     private MiniProgram miniProgram;
 
     /**模板数据*/

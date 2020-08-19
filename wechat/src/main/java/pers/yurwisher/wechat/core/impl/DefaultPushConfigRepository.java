@@ -78,7 +78,6 @@ public class DefaultPushConfigRepository implements PushConfigRepository {
         //token已作废
         if(expiresTime == -1L || expiresTime - System.currentTimeMillis() <= 0){
             if(isAutoRefresh()){
-                System.out.println("===========================");
                 WxAccessToken newToken = coreService.getAccessToken();
                 updateAccessToken(newToken);
             }
@@ -98,7 +97,7 @@ public class DefaultPushConfigRepository implements PushConfigRepository {
 
     @Override
     public void updateAccessToken(WxAccessToken newToken) {
-        Long now = System.currentTimeMillis();
+        long now = System.currentTimeMillis();
         logger.info("刷新token,旧token有效期还剩余:{}",now - expiresTime );
         this.accessToken = newToken.getAccessToken() ;
         this.expiresTime = now + (newToken.getExpiresIn() - 200) * 1000L;
