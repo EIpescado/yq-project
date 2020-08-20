@@ -14,11 +14,12 @@ import java.util.List;
 @Data
 public class WxMpUserQuery implements Serializable {
 
-  private static final long serialVersionUID = 8517749820213857321L;
+  private static final long serialVersionUID = -2846854192243381521L;
   @JSONField(name = "user_list")
-  private List<WxMpUserQueryParam> useList = new ArrayList<>();
+  private List<WxMpUserQueryParam> useList;
 
   public WxMpUserQuery(List<String> openIds){
+    useList = new ArrayList<>(openIds.size());
     for(String openId: openIds){
       useList.add(new WxMpUserQueryParam(openId));
     }

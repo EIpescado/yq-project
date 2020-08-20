@@ -77,6 +77,8 @@ public interface HttpRequest {
      * @param url 地址
      * @param inputStream 输入流
      * @param mediaKey 文件标识
+     * @param otherKey 其他标识
+     * @param otherParams 其他参数
      * @return 请求结果
      */
     String uploadFile(String url,InputStream inputStream, String mediaKey,String otherKey,String otherParams);
